@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management - My Bookings</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .bookings-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <a href="#" id="logoutBtn" style="display:none; color: #ff4c4c;">Logout</a>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header" style="padding: 40px;">
+        <h1>My Bookings</h1>
+        <p>View your past and current bookings here</p>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="bookings-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Room Details</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="myBookingsTableBody">
+                <tr><td colspan="5" style="text-align: center;">Loading your bookings...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer Section -->
+    <footer style="background-color: #333; color: white; text-align: center; padding: 20px; margin-top: 40px;">
+        <p>&copy; 2026 Luxury Hotel Management. All rights reserved.</p>
+        <p>Email: contact@luxuryhotel.com | Phone: +94 77 123 4567</p>
+        <p>123 Ocean Drive, Colombo, Sri Lanka</p>
+    </footer>
+
+    <script src="js/common.js"></script>
+    <script src="js/my-bookings.js"></script>
+</body>
+</html>

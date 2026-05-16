@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Management - Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="#" id="logoutBtn" style="color: #ff4c4c;">Logout</a>
+    </div>
+
+    <div class="admin-container">
+        <h1 style="text-align: center;">Admin Dashboard</h1>
+
+        <!-- 1. Aluth Rooms Add Karana Kotasa -->
+        <div class="admin-section">
+            <h2>Add a New Room</h2>
+            <form id="addRoomForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" id="room_number" placeholder="Room Number (eg: 105)" required>
+                <select id="room_type" required>
+                    <option value="Single">Single</option>
+                    <option value="Double">Double</option>
+                    <option value="Family">Family</option>
+                    <option value="Suite">Suite</option>
+                </select>
+                <input type="number" id="room_price" placeholder="Price per Night (LKR)" required>
+                <input type="file" id="room_image" accept="image/*" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="room_desc" placeholder="Room Description" style="grid-column: span 2;" required>
+                <button type="submit" class="book-btn" style="grid-column: span 2;">Add Room</button>
+            </form>
+        </div>
+
+        <!-- 2. Manage Rooms Kotasa -->
+        <div class="admin-section">
+            <h2>Manage Rooms</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room No</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="roomsTableBody">
+                    <tr><td colspan="5" style="text-align: center;">Loading rooms...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. Bookings Balana Kotasa (Table) -->
+        <div class="admin-section">
+            <h2>All Customer Bookings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>NIC / Passport</th>
+                        <th>Room No</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Total Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <tr><td colspan="6" style="text-align: center;">Loading bookings...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Edit Room Modal -->
+    <div id="editRoomModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; position: relative;">
+            <span id="closeEditModal" style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer;">&times;</span>
+            <h2>Edit Room</h2>
+            <form id="editRoomForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="hidden" id="edit_room_id">
+                <input type="number" id="edit_room_price" placeholder="Price per Night (LKR)" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="edit_room_desc" placeholder="Room Description" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <select id="edit_room_status" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="Available">Available</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select>
+                <button type="submit" class="book-btn">Update Room</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer style="background-color: #333; color: white; text-align: center; padding: 20px; margin-top: 40px;">
+        <p>&copy; 2026 Luxury Hotel Management. All rights reserved.</p>
+        <p>Email: contact@luxuryhotel.com | Phone: +94 77 123 4567</p>
+        <p>123 Ocean Drive, Colombo, Sri Lanka</p>
+    </footer>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
