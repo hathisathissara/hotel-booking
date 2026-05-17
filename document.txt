@@ -1,0 +1,9 @@
+hatheesha6504@gmail.com  admin
+hathisathissara@gmail.com user
+123456789
+
+hoteldb
+
+bfa123456789
+
+mongodb+srv://hoteldb:bfa123456789@cluster0.lj9lurl.mongodb.net/?appName=Cluster0
