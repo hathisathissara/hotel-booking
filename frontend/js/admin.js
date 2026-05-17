@@ -26,7 +26,7 @@ async function loadBookings() {
         bookings.forEach(b => {
             const checkIn = new Date(b.check_in_date).toLocaleDateString();
             const checkOut = new Date(b.check_out_date).toLocaleDateString();
-            
+
             // Status Badge Colors
             let statusColor = b.status === 'Pending' ? 'orange' : (b.status === 'Confirmed' ? 'green' : (b.status === 'Checked-in' ? 'blue' : (b.status === 'Checked-out' ? 'purple' : 'red')));
 
@@ -61,7 +61,7 @@ async function loadBookings() {
 }
 
 // Update Booking Status
-window.updateBookingStatus = async function(bookingId, status) {
+window.updateBookingStatus = async function (bookingId, status) {
     try {
         const res = await fetch(`/api/bookings/${bookingId}/status`, {
             method: 'PUT',
@@ -98,7 +98,7 @@ async function loadRooms() {
 
         rooms.forEach(r => {
             let statusColor = r.status === 'Available' ? 'green' : (r.status === 'Maintenance' ? 'red' : 'orange');
-            
+
             tbody.innerHTML += `
                 <tr>
                     <td>${r.room_number}</td>
@@ -160,9 +160,9 @@ if (addRoomForm) {
 
             const res = await fetch('/api/rooms', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(roomData)
             });
@@ -187,7 +187,7 @@ if (addRoomForm) {
 
 // Edit Room Modal Logic
 const editModal = document.getElementById('editRoomModal');
-window.openEditRoomModal = function(id, price, desc, status) {
+window.openEditRoomModal = function (id, room_number, price, desc, status) {
     document.getElementById('edit_room_id').value = id;
     document.getElementById('edit_room_price').value = price;
     document.getElementById('edit_room_desc').value = desc;
@@ -235,9 +235,9 @@ if (editRoomForm) {
 
             const res = await fetch(`/api/rooms/${id}`, {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(updateData)
             });
@@ -257,7 +257,7 @@ if (editRoomForm) {
 }
 
 // Delete Room Logic
-window.deleteRoom = async function(id) {
+window.deleteRoom = async function (id) {
     const confirm = await Swal.fire({
         title: 'Are you sure?',
         text: "This will put the room into Maintenance mode.",
@@ -295,7 +295,7 @@ async function loadDashboardStats() {
         if (!res.ok) return;
 
         const stats = await res.json();
-        
+
         document.getElementById('stat_arrivals').innerText = stats.arrivalsToday;
         document.getElementById('stat_revenue').innerText = `LKR ${stats.monthlyRevenue}`;
         document.getElementById('stat_rooms').innerText = stats.totalRooms;
