@@ -34,6 +34,9 @@ const createBooking = async (req, res) => {
         }
         const room = await Room.findById(room_id);
         if (!room) return res.status(400).json({ message: "room not found!" });
+        if (room.status === 'Maintenance') {
+            return res.status(400).json({ message: "Sorry! This room is currently under maintenance and cannot be booked." });
+        }
 
         const timeDifference = checkOut.getTime() - checkIn.getTime();
         const daysToStay = Math.ceil(timeDifference / (1000 * 3600 * 24));

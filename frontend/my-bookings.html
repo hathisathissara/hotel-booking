@@ -1,102 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Management - My Bookings</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Lumière Hotel — My Bookings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .bookings-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        :root {
+            --navy: #0d1b2a;
+            --navy-mid: #1a2e45;
+            --gold: #c9a84c;
+            --gold-light: #e8c97e;
+            --cream: #f9f5ee;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--navy);
+            margin: 0;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(13, 27, 42, 0.97);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
+
+        .navbar-brand-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1px;
         }
-        th {
-            background-color: #007bff;
+
+        .navbar-custom .nav-link {
+            color: #cdd9e8 !important;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: var(--gold) !important;
+        }
+
+        .nav-link-danger {
+            color: #ff7373 !important;
+        }
+
+        /* Page Header */
+        .page-hero {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .page-hero .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .page-hero h1 {
+            font-family: 'Playfair Display', serif;
             color: white;
+            font-size: 2.5rem;
+            margin: 0.5rem 0;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+
+        .page-hero p {
+            color: #8a9ab0;
+            margin: 0;
+        }
+
+        /* Cards */
+        .booking-card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eef0f4;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-thumb {
+            width: 100px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+
+        .status-Pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-Confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-Cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-Checked-in {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-Checked-out {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            padding: 0.45rem 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-gold:hover {
+            background: var(--gold-light);
+            color: var(--navy);
+        }
+
+        .btn-cancel {
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            padding: 0.45rem 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #fecaca;
+            color: #7f1d1d;
+        }
+
+        .price-tag {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .price-tag small {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+
+        .info-pill i {
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            background: var(--navy);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--navy);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: var(--navy);
+            color: #8a9ab0;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+        }
+
+        footer .footer-brand {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-        <a href="#" id="logoutBtn" style="display:none; color: #ff4c4c;">Logout</a>
-    </div>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
 
-    <!-- Header Section -->
-    <div class="header" style="padding: 40px;">
+    <!-- Page Header -->
+    <div class="page-hero">
+        <p class="eyebrow">Your Account</p>
         <h1>My Bookings</h1>
-        <p>View your past and current bookings here</p>
+        <p>View and manage your reservations</p>
     </div>
 
-    <!-- Bookings Table -->
-    <div class="bookings-container">
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Room Details</th>
-                        <th>Check-in</th>
-                        <th>Check-out</th>
-                        <th>Total Price</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="myBookingsTableBody">
-                    <tr><td colspan="6" style="text-align: center;">Loading your bookings...</td></tr>
-                </tbody>
-            </table>
+    <!-- Bookings -->
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title mb-0"><i class="bi bi-calendar2-week me-2"
+                    style="color:var(--gold);"></i>Reservations</h2>
+        </div>
+        <div id="myBookingsContainer">
+            <div class="text-center py-5">
+                <div class="spinner-border text-warning" role="status"></div>
+                <p class="mt-2 text-muted">Loading your bookings...</p>
+            </div>
         </div>
     </div>
 
-    <!-- Add Review Modal -->
-    <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; position: relative;">
-            <span id="closeReviewModal" style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer;">&times;</span>
-            <h2>Write a Review</h2>
-            <form id="reviewForm" style="display: flex; flex-direction: column; gap: 10px;">
-                <input type="hidden" id="review_room_id">
-                <label>Rating (1-5):</label>
-                <input type="number" id="review_rating" min="1" max="5" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-                <label>Comment:</label>
-                <textarea id="review_comment" rows="4" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-                <button type="submit" class="book-btn" style="padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit Review</button>
-            </form>
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-star me-2"></i>Write a Review</h5>
+                    <button type="button" class="btn-close" id="closeReviewModal" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reviewForm">
+                        <input type="hidden" id="review_room_id">
+                        <div class="mb-3">
+                            <label class="form-label">Rating (1–5)</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" id="review_rating" min="1" max="5" class="form-control"
+                                    placeholder="5" required style="max-width: 80px;">
+                                <span class="d-flex align-items-center text-muted small">out of 5 stars</span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Comment</label>
+                            <textarea id="review_comment" rows="4" class="form-control"
+                                placeholder="Share your experience..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-2">
+                            <i class="bi bi-send me-2"></i>Submit Review
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer style="background-color: #333; color: white; text-align: center; padding: 20px; margin-top: 40px;">
-        <p>&copy; 2026 Luxury Hotel Management. All rights reserved.</p>
-        <p>Email: contact@luxuryhotel.com | Phone: +94 77 123 4567</p>
-        <p>123 Ocean Drive, Colombo, Sri Lanka</p>
-    </footer>
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/common.js"></script>
     <script src="js/my-bookings.js"></script>
+    <style>
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </body>
+
 </html>
