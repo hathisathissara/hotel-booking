@@ -122,6 +122,7 @@ if (addRoomForm) {
         try {
             let image_url = "https://via.placeholder.com/300x200?text=Hotel+Room";
             const imageFile = document.getElementById('room_image').files[0];
+            const manualUrl = document.getElementById('room_image_url')?.value;
 
             // 1. Upload Image First (If selected)
             if (imageFile) {
@@ -137,6 +138,8 @@ if (addRoomForm) {
                 if (!uploadRes.ok) throw new Error("Image upload failed");
                 const uploadData = await uploadRes.json();
                 image_url = uploadData.image_url;
+            } else if (manualUrl && manualUrl.trim() !== "") {
+                image_url = manualUrl.trim();
             }
 
             // 2. Add Room
@@ -199,13 +202,37 @@ if (editRoomForm) {
         const status = document.getElementById('edit_room_status').value;
 
         try {
+            let updateData = { price, description, status };
+            const imageFile = document.getElementById('edit_room_image').files[0];
+            const manualUrl = document.getElementById('edit_room_image_url')?.value;
+
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                const uploadRes = await fetch('/api/rooms/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    updateData.image_url = uploadData.image_url;
+                } else {
+                    throw new Error("Image upload failed");
+                }
+            } else if (manualUrl && manualUrl.trim() !== "") {
+                updateData.image_url = manualUrl.trim();
+            }
+
             const res = await fetch(`/api/rooms/${id}`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}` 
                 },
-                body: JSON.stringify({ price, description, status })
+                body: JSON.stringify(updateData)
             });
 
             if (res.ok) {

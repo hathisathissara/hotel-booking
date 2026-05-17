@@ -30,7 +30,10 @@
                     <option value="Suite">Suite</option>
                 </select>
                 <input type="number" id="room_price" placeholder="Price per Night (LKR)" required>
-                <input type="file" id="room_image" accept="image/*" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <div style="display: flex; gap: 5px; flex-direction: column;">
+                    <input type="file" id="room_image" accept="image/*" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="room_image_url" placeholder="Or enter Image URL" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
                 <input type="text" id="room_desc" placeholder="Room Description" style="grid-column: span 2;" required>
                 <button type="submit" class="book-btn" style="grid-column: span 2;">Add Room</button>
             </form>
@@ -86,6 +89,11 @@
                 <input type="hidden" id="edit_room_id">
                 <input type="number" id="edit_room_price" placeholder="Price per Night (LKR)" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="edit_room_desc" placeholder="Room Description" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <div style="display: flex; gap: 5px; flex-direction: column;">
+                    <label style="font-size: 14px; color: #555;">Update Image (Optional)</label>
+                    <input type="file" id="edit_room_image" accept="image/*" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="text" id="edit_room_image_url" placeholder="Or enter Image URL" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
                 <select id="edit_room_status" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <option value="Available">Available</option>
                     <option value="Maintenance">Maintenance</option>
