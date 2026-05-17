@@ -106,7 +106,7 @@ async function loadRooms() {
                     <td>LKR ${r.price}</td>
                     <td style="color: ${statusColor}; font-weight: bold;">${r.status}</td>
                     <td>
-                        <button onclick="openEditRoomModal('${r._id}', '${r.price}', '${r.description}', '${r.status}')" style="background: blue; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Edit</button>
+                        <button onclick="openEditRoomModal('${r._id}', '${r.price}', encodeURIComponent('${r.description.replace(/'/g, "\\'")}'), '${r.status}')" style="background: blue; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Edit</button>
                         <button onclick="deleteRoom('${r._id}')" style="background: red; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Disable</button>
                     </td>
                 </tr>
@@ -187,10 +187,10 @@ if (addRoomForm) {
 
 // Edit Room Modal Logic
 const editModal = document.getElementById('editRoomModal');
-window.openEditRoomModal = function (id, room_number, price, desc, status) {
+window.openEditRoomModal = function (id, price, desc, status) {
     document.getElementById('edit_room_id').value = id;
     document.getElementById('edit_room_price').value = price;
-    document.getElementById('edit_room_desc').value = desc;
+    document.getElementById('edit_room_desc').value = decodeURIComponent(desc);
     document.getElementById('edit_room_status').value = status;
     editModal.style.display = 'flex';
 };
