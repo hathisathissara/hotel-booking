@@ -6,9 +6,12 @@ if (!token || !userInfo || userInfo.role !== 'admin') {
 }
 
 let bsEditModal;
+let bsAddModal;
 
 document.addEventListener('DOMContentLoaded', () => {
     bsEditModal = new bootstrap.Modal(document.getElementById('editRoomModal'));
+    const addModalEl = document.getElementById('addRoomModal');
+    if (addModalEl) bsAddModal = new bootstrap.Modal(addModalEl);
 });
 
 /* ── Stats ── */
@@ -98,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if(manualUrl.trim()) image_url=manualUrl.trim();
             const res=await fetch('/api/rooms',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({room_number:document.getElementById('room_number').value,type:document.getElementById('room_type').value,price:document.getElementById('room_price').value,image_url,description:document.getElementById('room_desc').value})});
             const data=await res.json();
-            if(res.ok){Swal.fire({icon:'success',title:'Room Added!',timer:1500,showConfirmButton:false});e.target.reset();loadRooms();}
+            if(res.ok){Swal.fire({icon:'success',title:'Room Added!',timer:1500,showConfirmButton:false});e.target.reset();if(bsAddModal)bsAddModal.hide();loadRooms();}
             else Swal.fire({icon:'error',title:'Error',text:data.message});
         }catch(err){Swal.fire({icon:'error',title:'Error',text:err.message||'Failed'});}
         finally{btn.disabled=false;btn.innerHTML='<i class="bi bi-plus-lg me-2"></i>Add Room';}

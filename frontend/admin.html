@@ -171,52 +171,14 @@
         <canvas id="revenueChart"></canvas>
     </div>
 
-    <!-- Add Room -->
-    <div class="section-card fade-up">
-        <h3 class="section-title"><i class="bi bi-plus-circle me-2"></i>Add a New Room</h3>
-        <form id="addRoomForm">
-            <div class="row g-3">
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Room Number</label>
-                    <input type="text" id="room_number" class="form-control" placeholder="e.g. 105" required>
-                </div>
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Room Type</label>
-                    <select id="room_type" class="form-select" required>
-                        <option value="Single">Single</option>
-                        <option value="Double">Double</option>
-                        <option value="Family">Family</option>
-                        <option value="Suite">Suite</option>
-                    </select>
-                </div>
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Price per Night (LKR)</label>
-                    <input type="number" id="room_price" class="form-control" placeholder="15000" required>
-                </div>
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Upload Image</label>
-                    <input type="file" id="room_image" class="form-control" accept="image/*">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Or Image URL</label>
-                    <input type="text" id="room_image_url" class="form-control" placeholder="https://...">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Description</label>
-                    <input type="text" id="room_desc" class="form-control" placeholder="Ocean-view room with king bed..." required>
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-gold px-5">
-                        <i class="bi bi-plus-lg me-2"></i>Add Room
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-
     <!-- Manage Rooms -->
     <div class="section-card fade-up">
-        <h3 class="section-title"><i class="bi bi-door-open me-2"></i>Manage Rooms</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom: 2px solid #f1f5f9;">
+            <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-door-open me-2"></i>Manage Rooms</h3>
+            <button class="btn btn-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                <i class="bi bi-plus-lg me-1"></i>Add a New Room
+            </button>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover rounded overflow-hidden">
                 <thead>
@@ -260,6 +222,58 @@
                     </td></tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add a New Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addRoomForm">
+                    <div class="row g-3">
+                        <div class="col-md-4 col-6">
+                            <label class="form-label">Room Number</label>
+                            <input type="text" id="room_number" class="form-control" placeholder="e.g. 105" required>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <label class="form-label">Room Type</label>
+                            <select id="room_type" class="form-select" required>
+                                <option value="Single">Single</option>
+                                <option value="Double">Double</option>
+                                <option value="Family">Family</option>
+                                <option value="Suite">Suite</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <label class="form-label">Price per Night (LKR)</label>
+                            <input type="number" id="room_price" class="form-control" placeholder="15000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Upload Image</label>
+                            <input type="file" id="room_image" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Or Image URL</label>
+                            <input type="text" id="room_image_url" class="form-control" placeholder="https://...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <input type="text" id="room_desc" class="form-control" placeholder="Ocean-view room with king bed..." required>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-gold w-100">
+                                <i class="bi bi-plus-lg me-2"></i>Add Room
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
