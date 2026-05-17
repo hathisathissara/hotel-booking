@@ -1,5 +1,5 @@
 const express = require('express');
-const { createBooking, getAllBookings, updateBookingStatus, getMyBookings } = require('../controllers/bookingController');
+const { createBooking, getAllBookings, updateBookingStatus, getMyBookings, cancelBooking } = require('../controllers/bookingController');
 const { protect, admin } = require('../middleware/authMiddleware'); // Guard wa genawa
 
 const router = express.Router();
@@ -13,5 +13,6 @@ router.post('/', protect, createBooking);
 router.get('/', protect, admin, getAllBookings);
 
 router.put('/:id/status', protect, admin, updateBookingStatus);
+router.put('/:id/cancel', protect, cancelBooking);
 
 module.exports = router;

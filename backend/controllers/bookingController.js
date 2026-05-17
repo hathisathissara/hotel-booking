@@ -1,5 +1,14 @@
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
 const createBooking = async (req, res) => {
     try {
@@ -37,6 +46,17 @@ const createBooking = async (req, res) => {
             check_out_date: checkOut,
             total_price: total_price
         });
+
+        if (req.user && req.user.email) {
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: req.user.email,
+                subject: 'Your Booking is Confirmed! - Luxury Hotel',
+                text: `Dear ${req.user.full_name},\n\nYour booking for Room ${room.room_number} (${room.type}) is confirmed.\n\nCheck-in: ${checkIn.toDateString()}\nCheck-out: ${checkOut.toDateString()}\nTotal Price: LKR ${total_price}\n\nThank you for choosing Luxury Hotel!`
+            };
+            transporter.sendMail(mailOptions).catch(err => console.error('Email sending failed:', err));
+        }
+
         res.status(201).json({ message: "Room booked successfully!", booking });
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });
@@ -79,4 +99,22 @@ const getMyBookings = async (req, res) => {
     }
 };
 
-module.exports = { createBooking, getAllBookings, updateBookingStatus, getMyBookings };
+const cancelBooking = async (req, res) => {
+    try {
+        const booking = await Booking.findOne({ _id: req.params.id, user: req.user._id });
+        if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+        if (booking.status === 'Checked-in' || booking.status === 'Checked-out') {
+            return res.status(400).json({ message: "Cannot cancel a booking that has already started" });
+        }
+
+        booking.status = 'Cancelled';
+        await booking.save();
+
+        res.status(200).json({ message: "Booking cancelled successfully", booking });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+
+module.exports = { createBooking, getAllBookings, updateBookingStatus, getMyBookings, cancelBooking };

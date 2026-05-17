@@ -5,6 +5,7 @@
     <title>Hotel Management - Admin Dashboard</title>
     <link rel="stylesheet" href="/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
        
     </style>
@@ -17,6 +18,33 @@
 
     <div class="admin-container">
         <h1 style="text-align: center;">Admin Dashboard</h1>
+
+        <!-- Dashboard Stats -->
+        <div class="admin-section">
+            <h2>Overview</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; margin-bottom: 20px;">
+                <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3>Arrivals Today</h3>
+                    <p id="stat_arrivals" style="font-size: 24px; font-weight: bold; color: #007bff;">-</p>
+                </div>
+                <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3>Monthly Revenue</h3>
+                    <p id="stat_revenue" style="font-size: 24px; font-weight: bold; color: #28a745;">-</p>
+                </div>
+                <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3>Active Rooms</h3>
+                    <p id="stat_rooms" style="font-size: 24px; font-weight: bold; color: #17a2b8;">-</p>
+                </div>
+                <div style="flex: 1; min-width: 150px; background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3>Total Users</h3>
+                    <p id="stat_users" style="font-size: 24px; font-weight: bold; color: #ffc107;">-</p>
+                </div>
+            </div>
+            
+            <div style="max-width: 600px; margin: 0 auto;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
 
         <!-- 1. Aluth Rooms Add Karana Kotasa -->
         <div class="admin-section">

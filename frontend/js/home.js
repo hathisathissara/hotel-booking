@@ -7,12 +7,21 @@ const modalRoomId = document.getElementById('modal_room_id');
 const bookingMessage = document.getElementById('bookingMessage');
 
 
-async function fetchRooms(checkIn = '', checkOut = '') {
+async function fetchRooms(checkIn = '', checkOut = '', type = '', maxPrice = '') {
     try {
         let url = '/api/rooms';
+        let params = new URLSearchParams();
         if (checkIn && checkOut) {
-            url = `/api/rooms/available?check_in=${checkIn}&check_out=${checkOut}`;
+            params.append('check_in', checkIn);
+            params.append('check_out', checkOut);
         }
+        if (type) params.append('type', type);
+        if (maxPrice) params.append('maxPrice', maxPrice);
+
+        if (params.toString()) {
+            url = `/api/rooms/available?${params.toString()}`;
+        }
+
         const res = await fetch(url);
         const rooms = await res.json();
         roomsContainer.innerHTML = '';
@@ -29,7 +38,10 @@ async function fetchRooms(checkIn = '', checkOut = '') {
                     <h3>${room.type} Room (No: ${room.room_number})</h3>
                     <p>${room.description}</p>
                     <h4>LKR ${room.price} / night</h4>
-                    <button class="book-btn" onclick="bookRoom('${room._id}')">Book Now</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="book-btn" onclick="bookRoom('${room._id}')" style="flex: 1;">Book Now</button>
+                        <button class="book-btn" onclick="viewReviews('${room._id}')" style="flex: 1; background-color: #17a2b8;">Reviews</button>
+                    </div>
                 </div>
             `;
         });
@@ -65,6 +77,44 @@ function bookRoom(roomId) {
     bookingForm.reset(); // Form eka clear karanawa
 }
 
+const reviewsModal = document.getElementById('reviewsModal');
+const closeReviewsModal = document.getElementById('closeReviewsModal');
+const reviewsList = document.getElementById('reviewsList');
+
+window.viewReviews = async function(roomId) {
+    reviewsModal.style.display = 'block';
+    reviewsList.innerHTML = '<p>Loading reviews...</p>';
+
+    try {
+        const res = await fetch(`/api/reviews/${roomId}`);
+        const reviews = await res.json();
+        
+        if (reviews.length === 0) {
+            reviewsList.innerHTML = '<p>No reviews yet for this room.</p>';
+            return;
+        }
+
+        let html = '';
+        reviews.forEach(r => {
+            const stars = '⭐'.repeat(r.rating);
+            html += `
+                <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    <strong>${r.user.full_name}</strong> - <span style="color: gold;">${stars}</span>
+                    <p style="margin: 5px 0; font-size: 14px;">"${r.comment}"</p>
+                    <small style="color: gray;">${new Date(r.createdAt).toLocaleDateString()}</small>
+                </div>
+            `;
+        });
+        reviewsList.innerHTML = html;
+    } catch (err) {
+        reviewsList.innerHTML = '<p style="color: red;">Failed to load reviews.</p>';
+    }
+};
+
+closeReviewsModal.addEventListener('click', () => {
+    reviewsModal.style.display = 'none';
+});
+
 // 2. Modal eke X (Close) eka obuwama eka waheema
 closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
@@ -74,6 +124,9 @@ closeModal.addEventListener('click', () => {
 window.addEventListener('click', (event) => {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+    if (event.target === reviewsModal) {
+        reviewsModal.style.display = 'none';
     }
 });
 
@@ -129,17 +182,25 @@ if (searchForm) {
         e.preventDefault();
         const checkIn = document.getElementById('search_check_in').value;
         const checkOut = document.getElementById('search_check_out').value;
+        const roomType = document.getElementById('search_room_type').value;
+        const maxPrice = document.getElementById('search_max_price').value;
         
-        const inDate = new Date(checkIn);
-        const outDate = new Date(checkOut);
-        
-        if (inDate >= outDate) {
-            Swal.fire({ icon: 'error', title: 'Invalid Dates', text: 'Check-out date must be after Check-in date.' });
-            return;
+        if (checkIn || checkOut) {
+            if (!checkIn || !checkOut) {
+                Swal.fire({ icon: 'error', title: 'Invalid Dates', text: 'Please select both Check-in and Check-out dates.' });
+                return;
+            }
+            const inDate = new Date(checkIn);
+            const outDate = new Date(checkOut);
+            
+            if (inDate >= outDate) {
+                Swal.fire({ icon: 'error', title: 'Invalid Dates', text: 'Check-out date must be after Check-in date.' });
+                return;
+            }
         }
 
         roomsContainer.innerHTML = '<h2>Searching... ⏳</h2>';
-        fetchRooms(checkIn, checkOut);
+        fetchRooms(checkIn, checkOut, roomType, maxPrice);
     });
 }
 // Page load weddi run wenna

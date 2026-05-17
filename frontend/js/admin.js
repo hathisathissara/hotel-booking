@@ -28,7 +28,19 @@ async function loadBookings() {
             const checkOut = new Date(b.check_out_date).toLocaleDateString();
             
             // Status Badge Colors
-            let statusColor = b.status === 'Pending' ? 'orange' : (b.status === 'Confirmed' ? 'green' : 'red');
+            let statusColor = b.status === 'Pending' ? 'orange' : (b.status === 'Confirmed' ? 'green' : (b.status === 'Checked-in' ? 'blue' : (b.status === 'Checked-out' ? 'purple' : 'red')));
+
+            let actionBtns = '-';
+            if (b.status === 'Pending') {
+                actionBtns = `
+                    <button onclick="updateBookingStatus('${b._id}', 'Confirmed')" style="background: green; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px; margin-bottom: 5px;">Confirm</button>
+                    <button onclick="updateBookingStatus('${b._id}', 'Cancelled')" style="background: red; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Reject</button>
+                `;
+            } else if (b.status === 'Confirmed') {
+                actionBtns = `<button onclick="updateBookingStatus('${b._id}', 'Checked-in')" style="background: #17a2b8; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Check In</button>`;
+            } else if (b.status === 'Checked-in') {
+                actionBtns = `<button onclick="updateBookingStatus('${b._id}', 'Checked-out')" style="background: #6f42c1; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Check Out</button>`;
+            }
 
             tbody.innerHTML += `
                 <tr>
@@ -39,12 +51,7 @@ async function loadBookings() {
                     <td>${checkOut}</td>
                     <td>LKR ${b.total_price}</td>
                     <td style="color: ${statusColor}; font-weight: bold;">${b.status}</td>
-                    <td>
-                        ${b.status === 'Pending' ? `
-                            <button onclick="updateBookingStatus('${b._id}', 'Confirmed')" style="background: green; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Confirm</button>
-                            <button onclick="updateBookingStatus('${b._id}', 'Cancelled')" style="background: red; color: white; padding: 5px; cursor: pointer; border: none; border-radius: 4px;">Reject</button>
-                        ` : '-'}
-                    </td>
+                    <td>${actionBtns}</td>
                 </tr>
             `;
         });
@@ -279,6 +286,49 @@ window.deleteRoom = async function(id) {
     }
 }
 
+// Dashboard Stats Load
+async function loadDashboardStats() {
+    try {
+        const res = await fetch('/api/admin/stats', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+
+        const stats = await res.json();
+        
+        document.getElementById('stat_arrivals').innerText = stats.arrivalsToday;
+        document.getElementById('stat_revenue').innerText = `LKR ${stats.monthlyRevenue}`;
+        document.getElementById('stat_rooms').innerText = stats.totalRooms;
+        document.getElementById('stat_users').innerText = stats.totalUsers;
+
+        // Render Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Monthly Revenue'],
+                datasets: [{
+                    label: 'Revenue (LKR)',
+                    data: [stats.monthlyRevenue],
+                    backgroundColor: 'rgba(40, 167, 69, 0.5)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Error loading stats:", error);
+    }
+}
+
 // Initial Load
+loadDashboardStats();
 loadBookings();
 loadRooms();

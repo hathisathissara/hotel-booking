@@ -54,20 +54,39 @@
 
     <!-- Bookings Table -->
     <div class="bookings-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Room Details</th>
-                    <th>Check-in</th>
-                    <th>Check-out</th>
-                    <th>Total Price</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="myBookingsTableBody">
-                <tr><td colspan="5" style="text-align: center;">Loading your bookings...</td></tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Room Details</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="myBookingsTableBody">
+                    <tr><td colspan="6" style="text-align: center;">Loading your bookings...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Review Modal -->
+    <div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; position: relative;">
+            <span id="closeReviewModal" style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer;">&times;</span>
+            <h2>Write a Review</h2>
+            <form id="reviewForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="hidden" id="review_room_id">
+                <label>Rating (1-5):</label>
+                <input type="number" id="review_rating" min="1" max="5" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <label>Comment:</label>
+                <textarea id="review_comment" rows="4" required style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <button type="submit" class="book-btn" style="padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit Review</button>
+            </form>
+        </div>
     </div>
 
     <!-- Footer Section -->

@@ -63,28 +63,33 @@ const deleteRoom = async (req, res) => {
 // 5. Get Available Rooms based on Date
 const getAvailableRooms = async (req, res) => {
     try {
-        const { check_in, check_out } = req.query;
-        if (!check_in || !check_out) {
-            return res.status(400).json({ message: "Check-in and check-out dates are required" });
+        const { check_in, check_out, type, maxPrice } = req.query;
+        
+        let query = { status: { $ne: 'Maintenance' } };
+
+        if (type) {
+            query.type = type;
+        }
+        if (maxPrice) {
+            query.price = { $lte: Number(maxPrice) };
         }
 
-        const checkInDate = new Date(check_in);
-        const checkOutDate = new Date(check_out);
+        if (check_in && check_out) {
+            const checkInDate = new Date(check_in);
+            const checkOutDate = new Date(check_out);
 
-        const overlappingBookings = await Booking.find({
-            status: { $ne: 'Cancelled' },
-            $or: [
-                { check_in_date: { $lt: checkOutDate }, check_out_date: { $gt: checkInDate } }
-            ]
-        });
+            const overlappingBookings = await Booking.find({
+                status: { $ne: 'Cancelled' },
+                $or: [
+                    { check_in_date: { $lt: checkOutDate }, check_out_date: { $gt: checkInDate } }
+                ]
+            });
 
-        const bookedRoomIds = overlappingBookings.map(booking => booking.room);
+            const bookedRoomIds = overlappingBookings.map(booking => booking.room);
+            query._id = { $nin: bookedRoomIds };
+        }
 
-        const availableRooms = await Room.find({
-            _id: { $nin: bookedRoomIds },
-            status: { $ne: 'Maintenance' }
-        });
-
+        const availableRooms = await Room.find(query);
         res.status(200).json(availableRooms);
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });

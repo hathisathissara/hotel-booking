@@ -6,6 +6,8 @@ const connectDB = require('./config/db.js');
 const userRoutes = require('./routes/userRoutes.js');
 const roomRoutes = require('./routes/roomRoutes.js');
 const bookingRoutes = require('./routes/bookingRoutes.js');
+const reviewRoutes = require('./routes/reviewRoutes.js');
+const adminRoutes = require('./routes/adminRoutes.js');
 
 dotenv.config();
 connectDB();
@@ -18,6 +20,8 @@ app.use(cors());
 app.use('/api/users', userRoutes); 
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 1. 'frontend' folder eka static folder ekak widiyata set karanawa
 app.use(express.static(path.join(__dirname, '../frontend')));
