@@ -435,10 +435,17 @@
         <div class="section-card fade-up">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3"
                 style="border-bottom: 2px solid #f1f5f9;">
-                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-door-open me-2"></i>All Customer Bookings</h3>
+                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-calendar-check me-2"></i>All Customer Bookings</h3>
                 <button class="btn btn-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#addBookModal">
                     <i class="bi bi-plus-lg me-1"></i>Add a New Booking
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <div class="input-group" style="max-width: 400px;">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="searchBookingInput" class="form-control border-start-0 ps-0 shadow-none" placeholder="Search by NIC, Passport or Name...">
+                </div>
             </div>
 
             <div class="table-responsive">
@@ -559,6 +566,72 @@
                         <button type="submit" class="btn btn-gold w-100">
                             <i class="bi bi-check2-circle me-2"></i>Update Room
                         </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Booking Modal -->
+    <div class="modal fade" id="addBookModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Add a New Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBookForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Customer Name</label>
+                                <input type="text" id="book_cust_name" class="form-control" placeholder="e.g. John Doe" required>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">ID Type</label>
+                                <select id="book_id_type" class="form-select" required>
+                                    <option value="NIC">NIC</option>
+                                    <option value="Passport">Passport</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <label class="form-label">ID Number</label>
+                                <input type="text" id="book_id_number" class="form-control" placeholder="e.g. 199012345678" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Room Type</label>
+                                <select id="book_room_type" class="form-select" required>
+                                    <option value="Single">Single</option>
+                                    <option value="Double">Double</option>
+                                    <option value="Family">Family</option>
+                                    <option value="Suite">Suite</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="form-label">Check-in Date</label>
+                                <input type="date" id="book_checkin" class="form-control" required>
+                            </div>
+                            <div class="col-md-4 col-6">
+                                <label class="form-label">Check-out Date</label>
+                                <input type="date" id="book_checkout" class="form-control" required>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="button" id="btnCheckAvailableRooms" class="btn btn-outline-secondary w-100 py-2" style="border-radius: 8px; font-weight: 600;">
+                                    <i class="bi bi-search me-2"></i>Check Available Free Rooms
+                                </button>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <label class="form-label">Select Available Room</label>
+                                <select id="book_available_rooms" class="form-select" required disabled>
+                                    <option value="">Please check availability first...</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" id="btnSubmitAdminBooking" class="btn btn-gold w-100 py-2" disabled>
+                                    <i class="bi bi-check2-circle me-2"></i>Confirm Booking
+                                </button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
