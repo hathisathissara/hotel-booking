@@ -1,32 +1,6 @@
 // Function to load layout components
 async function loadLayout() {
-    const headerPlaceholder = document.getElementById('header-placeholder');
-    const footerPlaceholder = document.getElementById('footer-placeholder');
-
-    if (headerPlaceholder) {
-        try {
-            const res = await fetch('/layout/header.html');
-            if (res.ok) {
-                headerPlaceholder.innerHTML = await res.text();
-            }
-        } catch (e) {
-            console.error('Error loading header:', e);
-        }
-    }
-
-    if (footerPlaceholder) {
-        try {
-            const res = await fetch('/layout/footer.html');
-            if (res.ok) {
-                footerPlaceholder.innerHTML = await res.text();
-            }
-        } catch (e) {
-            console.error('Error loading footer:', e);
-        }
-    }
-
-    // Now initialize the navbar logic
-    initNavbar();
+    // Layout is generated synchronously by initNavbar to avoid DOM recreation and Bootstrap collapse detach
 }
 function initNavbar() {
     const token = localStorage.getItem('hotel_token');
