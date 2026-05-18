@@ -1,16 +1,43 @@
-<nav class="navbar-custom d-flex align-items-center justify-content-between w-100">
-    <div class="d-flex align-items-center gap-3">
-        <a href="/" class="navbar-brand-text text-decoration-none">
-            <i class="bi bi-building me-2" style="color: var(--gold);"></i>Lumière
-        </a>
-        <span class="admin-badge" id="adminBadge" style="display:none; background: rgba(201,168,76,0.15); color: var(--gold); font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 4px;"><i class="bi bi-shield-check me-1"></i>Admin</span>
-    </div>
-    <div class="d-flex align-items-center gap-1" id="nav-links-container">
-        <a href="/" class="nav-link"><i class="bi bi-house me-1"></i>Home</a>
-        <a href="/login" class="nav-link" id="loginLink">Login</a>
-        <a href="/register" class="nav-link" id="registerLink">Register</a>
-        <a href="#" id="logoutBtn" class="nav-link nav-link-danger" style="display:none;">
-            <i class="bi bi-box-arrow-right me-1"></i>Logout
-        </a>
+<nav class="navbar navbar-expand-md navbar-custom">
+    <div class="container-fluid px-3">
+
+        <!-- Brand + Admin Badge -->
+        <div class="d-flex align-items-center gap-2">
+            <a href="/" class="navbar-brand-text text-decoration-none">
+                <i class="bi bi-building me-1" style="color: var(--gold);"></i>Lumière
+            </a>
+            <span class="admin-badge" id="adminBadge" style="display:none;">
+                <i class="bi bi-shield-check me-1"></i>Admin
+            </span>
+        </div>
+
+        <!-- Mobile Hamburger Toggle -->
+        <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarLinks"
+            aria-controls="navbarLinks"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            style="border-color: rgba(201,168,76,0.4); padding: 4px 8px;">
+            <i class="bi bi-list" style="color: var(--gold); font-size: 1.4rem;"></i>
+        </button>
+
+        <!-- Nav Links (collapsible on mobile) -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarLinks">
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-1 py-2 py-md-0"
+                id="nav-links-container">
+                <a href="/" class="nav-link"><i class="bi bi-house me-1"></i>Home</a>
+                <a href="/login" class="nav-link" id="loginLink">
+                    <i class="bi bi-person me-1"></i>Login
+                </a>
+                <a href="/register" class="nav-link" id="registerLink">
+                    <i class="bi bi-person-plus me-1"></i>Register
+                </a>
+                <a href="#" id="logoutBtn" class="nav-link nav-link-danger" style="display:none;">
+                    <i class="bi bi-box-arrow-right me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+
     </div>
 </nav>

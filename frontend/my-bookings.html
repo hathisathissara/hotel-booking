@@ -31,21 +31,16 @@
         .navbar-custom {
             background: rgba(13, 27, 42, 0.97);
             backdrop-filter: blur(12px);
-            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
             position: sticky;
             top: 0;
             z-index: 999;
-            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         .navbar-brand-text {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: var(--gold) !important;
-            text-decoration: none;
+            font-size: 1.4rem;
+            color: var(--gold);
             letter-spacing: 1px;
         }
 
@@ -53,16 +48,47 @@
             color: #cdd9e8 !important;
             font-size: 0.875rem;
             font-weight: 500;
-            transition: color 0.2s;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
         }
 
         .navbar-custom .nav-link:hover {
             color: var(--gold) !important;
+            background: rgba(201, 168, 76, 0.08);
         }
 
         .nav-link-danger {
             color: #ff7373 !important;
+        }
+
+        .nav-link-danger:hover {
+            color: #ff4c4c !important;
+            background: rgba(255, 76, 76, 0.08) !important;
+        }
+
+        .admin-badge {
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--gold);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+
+        /* Mobile collapse menu separator */
+        @media (max-width: 767px) {
+            #navbarLinks {
+                border-top: 1px solid rgba(201, 168, 76, 0.15);
+                margin-top: 8px;
+                padding-top: 4px;
+            }
+
+            .navbar-custom .nav-link {
+                padding: 0.6rem 0.5rem;
+            }
         }
 
         /* Page Header */

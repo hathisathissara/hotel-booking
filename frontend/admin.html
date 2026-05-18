@@ -27,49 +27,6 @@
             margin: 0;
         }
 
-        /* Navbar */
-        .navbar-custom {
-            background: var(--navy);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            border-bottom: 2px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .navbar-brand-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            color: var(--gold);
-            text-decoration: none;
-        }
-
-        .navbar-custom .nav-link {
-            color: #cdd9e8 !important;
-            font-size: 0.875rem;
-            font-weight: 500;
-            padding: 0.5rem 0.75rem;
-            transition: color 0.2s;
-        }
-
-        .navbar-custom .nav-link:hover {
-            color: var(--gold) !important;
-        }
-
-        .admin-badge {
-            background: rgba(201, 168, 76, 0.15);
-            color: var(--gold);
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 3px 10px;
-            border-radius: 4px;
-        }
-
         /* Page Header */
         .page-hero {
             background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
@@ -435,7 +392,8 @@
         <div class="section-card fade-up">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3"
                 style="border-bottom: 2px solid #f1f5f9;">
-                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-calendar-check me-2"></i>All Customer Bookings</h3>
+                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-calendar-check me-2"></i>All Customer
+                    Bookings</h3>
                 <button class="btn btn-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#addBookModal">
                     <i class="bi bi-plus-lg me-1"></i>Add a New Booking
                 </button>
@@ -444,7 +402,8 @@
             <div class="mb-4">
                 <div class="input-group" style="max-width: 400px;">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="searchBookingInput" class="form-control border-start-0 ps-0 shadow-none" placeholder="Search by NIC, Passport or Name...">
+                    <input type="text" id="searchBookingInput" class="form-control border-start-0 ps-0 shadow-none"
+                        placeholder="Search by NIC, Passport or Name...">
                 </div>
             </div>
 
@@ -585,7 +544,8 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Customer Name</label>
-                                <input type="text" id="book_cust_name" class="form-control" placeholder="e.g. John Doe" required>
+                                <input type="text" id="book_cust_name" class="form-control" placeholder="e.g. John Doe"
+                                    required>
                             </div>
                             <div class="col-md-3 col-6">
                                 <label class="form-label">ID Type</label>
@@ -596,7 +556,8 @@
                             </div>
                             <div class="col-md-3 col-6">
                                 <label class="form-label">ID Number</label>
-                                <input type="text" id="book_id_number" class="form-control" placeholder="e.g. 199012345678" required>
+                                <input type="text" id="book_id_number" class="form-control"
+                                    placeholder="e.g. 199012345678" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Room Type</label>
@@ -616,7 +577,9 @@
                                 <input type="date" id="book_checkout" class="form-control" required>
                             </div>
                             <div class="col-12 mt-3">
-                                <button type="button" id="btnCheckAvailableRooms" class="btn btn-outline-secondary w-100 py-2" style="border-radius: 8px; font-weight: 600;">
+                                <button type="button" id="btnCheckAvailableRooms"
+                                    class="btn btn-outline-secondary w-100 py-2"
+                                    style="border-radius: 8px; font-weight: 600;">
                                     <i class="bi bi-search me-2"></i>Check Available Free Rooms
                                 </button>
                             </div>
@@ -627,7 +590,8 @@
                                 </select>
                             </div>
                             <div class="col-12 mt-4">
-                                <button type="submit" id="btnSubmitAdminBooking" class="btn btn-gold w-100 py-2" disabled>
+                                <button type="submit" id="btnSubmitAdminBooking" class="btn btn-gold w-100 py-2"
+                                    disabled>
                                     <i class="bi bi-check2-circle me-2"></i>Confirm Booking
                                 </button>
                             </div>
