@@ -7,592 +7,583 @@
     <title>Lumière Hotel — Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --navy: #0d1b2a;
-            --navy-mid: #1a2e45;
+            --navy-dark: #080f1a;
+            --navy-sidebar: #0b1528;
+            --navy-card: #ffffff;
             --gold: #c9a84c;
-            --gold-light: #e8c97e;
-            --cream: #f0f4f8;
+            --gold-light: #f5e3b5;
+            --gold-hover: #b3923b;
+            --bg-workspace: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --font-display: 'Playfair Display', serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--cream);
-            color: var(--navy);
+            font-family: var(--font-sans);
+            background-color: var(--bg-workspace);
+            color: var(--text-main);
             margin: 0;
+            overflow-x: hidden;
         }
 
-        /* Page Header */
-        .page-hero {
-            background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
-            padding: 3rem 2rem 2.5rem;
-            text-align: center;
-            position: relative;
+        /* Dashboard Wrapper */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
         }
 
-        .page-hero h1 {
-            font-family: 'Playfair Display', serif;
-            color: white;
-            font-size: 2rem;
-            margin: 0;
+        /* Sidebar Styling */
+        .sidebar {
+            width: 270px;
+            background-color: var(--navy-sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            transition: var(--transition-smooth);
         }
 
-        .page-hero p {
-            color: #8a9ab0;
-            margin: 0.5rem 0 0;
-            font-size: 0.9rem;
+        .sidebar-brand {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Stat Cards */
-        .stat-card {
-            background: white;
-            border-radius: 14px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2e8f0;
-            transition: transform 0.2s;
-            text-align: center;
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(201, 168, 76, 0.12);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 1.1rem;
         }
 
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+        .brand-text {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
             font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.5px;
         }
 
-        .stat-label {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .sidebar-nav {
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0.8rem 1rem;
             color: #94a3b8;
             font-weight: 500;
+            font-size: 0.92rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: var(--transition-smooth);
         }
 
-        /* Section */
-        .section-card {
+        .nav-link-custom:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-link-custom.active {
+            color: var(--navy-sidebar);
+            background-color: var(--gold);
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(201, 168, 76, 0.25);
+        }
+
+        .nav-link-custom.active .nav-icon {
+            color: var(--navy-sidebar);
+        }
+
+        .nav-icon {
+            font-size: 1.15rem;
+            transition: var(--transition-smooth);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gold);
+            color: var(--navy-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .admin-info {
+            line-height: 1.2;
+        }
+
+        .admin-name {
+            font-weight: 600;
+            color: white;
+            font-size: 0.88rem;
+        }
+
+        .admin-role {
+            font-size: 0.72rem;
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.65rem;
+            background-color: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-logout:hover {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        /* Workspace Panel */
+        .workspace {
+            margin-left: 270px;
+            flex-grow: 1;
+            padding: 2.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Top Bar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .topbar-title h1 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin: 0;
+        }
+
+        .topbar-title p {
+            color: var(--text-muted);
+            margin: 0.25rem 0 0 0;
+            font-size: 0.88rem;
+        }
+
+        .topbar-date {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
             background: white;
-            border-radius: 14px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: var(--navy);
+        /* Stat Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card-custom {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition-smooth);
+        }
+
+        .stat-card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-card-value {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+        }
+
+        .stat-circle-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Analytics and Actions */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .section-title i {
+        .card-title-custom {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--navy-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title-custom i {
             color: var(--gold);
         }
 
-        /* Form */
-        .form-label {
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #64748b;
-            font-weight: 500;
+        /* Quick actions */
+        .quick-actions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .form-control,
-        .form-select {
-            border: 1.5px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.65rem 0.9rem;
-            font-size: 0.875rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: var(--bg-workspace);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            color: inherit;
         }
 
-        .form-control:focus,
-        .form-select:focus {
+        .action-item:hover {
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+            transform: translateX(4px);
+            background-color: #fffbeb;
         }
 
-        .btn-gold {
-            background: var(--gold);
-            color: var(--navy);
-            border: none;
-            font-weight: 700;
-            font-size: 0.875rem;
-            border-radius: 8px;
-            padding: 0.65rem 1.5rem;
-            transition: background 0.2s, transform 0.15s;
+        .action-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-        .btn-gold:hover {
-            background: var(--gold-light);
-            color: var(--navy);
-            transform: translateY(-1px);
-        }
-
-        /* Table */
-        .table {
-            font-size: 0.875rem;
-        }
-
-        .table thead th {
-            background: var(--navy);
-            color: white;
-            font-weight: 500;
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: none;
-            padding: 0.9rem 1rem;
-        }
-
-        .table thead th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-
-        .table thead th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        .table tbody td {
-            padding: 0.9rem 1rem;
-            border-color: #f1f5f9;
-            vertical-align: middle;
-        }
-
-        .table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .status-badge-sm {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-
-        .s-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .s-confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .s-checkin {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .s-checkout {
-            background: #ede9fe;
-            color: #5b21b6;
-        }
-
-        .s-cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .s-available {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .s-maintenance {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .s-occupied {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .action-btn {
-            border: none;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 5px;
-            transition: opacity 0.2s;
-            margin: 2px;
-        }
-
-        .action-btn:hover {
-            opacity: 0.85;
-        }
-
-        /* Modal */
-        .modal-content {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            background: var(--navy);
-            color: white;
-            border-radius: 16px 16px 0 0;
-            padding: 1.5rem;
-            border: none;
-        }
-
-        .modal-title {
-            font-family: 'Playfair Display', serif;
+        .action-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(201, 168, 76, 0.1);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
         }
 
-        .modal-header .btn-close {
-            filter: invert(1);
+        .action-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--navy-dark);
         }
 
-        .modal-body {
-            padding: 2rem;
+        .action-details p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 0.15rem 0 0 0;
         }
 
+        .action-btn-arrow {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Animations */
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(16px);
+                transform: translateY(12px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .fade-up {
+        .animated {
             animation: fadeUp 0.4s ease both;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                width: 70px;
+            }
+            .brand-text, .admin-info, .sidebar-footer span, .btn-logout span {
+                display: none;
+            }
+            .workspace {
+                margin-left: 70px;
+                padding: 1.5rem;
+            }
+            .grid-main {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Header Placeholder -->
-    <div id="header-placeholder"></div>
-
-    <!-- Page Header -->
-    <div class="page-hero">
-        <h1><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h1>
-        <p>Manage rooms, bookings, and hotel operations</p>
-    </div>
-
-    <div class="container py-4">
-
-        <!-- Stats -->
-        <div class="row g-3 mb-4 fade-up">
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:#3b82f6;">✈️</div>
-                    <div class="stat-value" id="stat_arrivals" style="color:#3b82f6;">—</div>
-                    <div class="stat-label">Arrivals Today</div>
-                </div>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="bi bi-building"></i></div>
+                <div class="brand-text">Lumière</div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:#22c55e;">💰</div>
-                    <div class="stat-value" id="stat_revenue" style="color:#22c55e; font-size: 1.4rem;">—</div>
-                    <div class="stat-label">Monthly Revenue</div>
-                </div>
+
+            <div class="sidebar-nav">
+                <a href="/admin" class="nav-link-custom active">
+                    <i class="bi bi-speedometer2 nav-icon"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="/admin/rooms" class="nav-link-custom">
+                    <i class="bi bi-door-open nav-icon"></i>
+                    <span>Manage Rooms</span>
+                </a>
+                <a href="/admin/bookings" class="nav-link-custom">
+                    <i class="bi bi-calendar-check nav-icon"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="/" class="nav-link-custom" style="margin-top: auto;">
+                    <i class="bi bi-globe nav-icon"></i>
+                    <span>Go to Website</span>
+                </a>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:var(--gold);">🏨</div>
-                    <div class="stat-value" id="stat_rooms" style="color:var(--gold);">—</div>
-                    <div class="stat-label">Active Rooms</div>
+
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="admin-avatar" id="avatarLetter">A</div>
+                    <div class="admin-info">
+                        <div class="admin-name" id="adminNameDisplay">Admin User</div>
+                        <div class="admin-role">Hotel Manager</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon" style="color:#a855f7;">👥</div>
-                    <div class="stat-value" id="stat_users" style="color:#a855f7;">—</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
+                <a href="#" id="logoutBtn" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
 
-        <!-- Revenue Chart -->
-        <div class="section-card fade-up"
-            style="max-width: 600px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
-            <h3 class="section-title"><i class="bi bi-bar-chart me-2"></i>Revenue Overview</h3>
-            <canvas id="revenueChart"></canvas>
-        </div>
-
-        <!-- Manage Rooms -->
-        <div class="section-card fade-up">
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-3"
-                style="border-bottom: 2px solid #f1f5f9;">
-                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-door-open me-2"></i>Manage Rooms</h3>
-                <button class="btn btn-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#addRoomModal">
-                    <i class="bi bi-plus-lg me-1"></i>Add a New Room
-                </button>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover rounded overflow-hidden">
-                    <thead>
-                        <tr>
-                            <th>Room No</th>
-                            <th>Type</th>
-                            <th>Price (LKR)</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="roomsTableBody">
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
-                                <div class="spinner-border spinner-border-sm text-warning me-2"></div>Loading rooms...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Bookings -->
-        <div class="section-card fade-up">
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-3"
-                style="border-bottom: 2px solid #f1f5f9;">
-                <h3 class="section-title mb-0 border-0 pb-0"><i class="bi bi-calendar-check me-2"></i>All Customer
-                    Bookings</h3>
-                <button class="btn btn-gold btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#addBookModal">
-                    <i class="bi bi-plus-lg me-1"></i>Add a New Booking
-                </button>
-            </div>
-
-            <div class="mb-4">
-                <div class="input-group" style="max-width: 400px;">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="searchBookingInput" class="form-control border-start-0 ps-0 shadow-none"
-                        placeholder="Search by NIC, Passport or Name...">
+        <!-- Main Workspace -->
+        <div class="workspace">
+            <!-- Topbar Header -->
+            <div class="topbar animated">
+                <div class="topbar-title">
+                    <h1>Dashboard Overview</h1>
+                    <p>Track metrics, analyze bookings, and execute rapid tasks</p>
+                </div>
+                <div class="topbar-date">
+                    <i class="bi bi-calendar3"></i>
+                    <span id="currentDateString">May 21, 2026</span>
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>NIC / Passport</th>
-                            <th>Room</th>
-                            <th>Check-in</th>
-                            <th>Check-out</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookingsTableBody">
-                        <tr>
-                            <td colspan="8" class="text-center py-4 text-muted">
-                                <div class="spinner-border spinner-border-sm text-warning me-2"></div>Loading
-                                bookings...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Room Modal -->
-    <div class="modal fade" id="addRoomModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add a New Room</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <!-- Dashboard Stats Grid -->
+            <div class="stats-grid animated" style="animation-delay: 0.1s;">
+                <!-- Arrivals -->
+                <div class="stat-card-custom">
+                    <div class="stat-details">
+                        <span class="stat-card-title">Arrivals Today</span>
+                        <span class="stat-card-value" id="stat_arrivals">—</span>
+                    </div>
+                    <div class="stat-circle-icon" style="background-color: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                        <i class="bi bi-airplane"></i>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="addRoomForm">
-                        <div class="row g-3">
-                            <div class="col-md-4 col-6">
-                                <label class="form-label">Room Number</label>
-                                <input type="text" id="room_number" class="form-control" placeholder="e.g. 105"
-                                    required>
+
+                <!-- Monthly Revenue -->
+                <div class="stat-card-custom">
+                    <div class="stat-details">
+                        <span class="stat-card-title">Monthly Revenue</span>
+                        <span class="stat-card-value" id="stat_revenue" style="font-size: 1.45rem;">—</span>
+                    </div>
+                    <div class="stat-circle-icon" style="background-color: rgba(34, 197, 94, 0.1); color: #22c55e;">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                </div>
+
+                <!-- Active Rooms -->
+                <div class="stat-card-custom">
+                    <div class="stat-details">
+                        <span class="stat-card-title">Active Rooms</span>
+                        <span class="stat-card-value" id="stat_rooms">—</span>
+                    </div>
+                    <div class="stat-circle-icon" style="background-color: rgba(201, 168, 76, 0.1); color: var(--gold);">
+                        <i class="bi bi-houses"></i>
+                    </div>
+                </div>
+
+                <!-- Total Users -->
+                <div class="stat-card-custom">
+                    <div class="stat-details">
+                        <span class="stat-card-title">Total Users</span>
+                        <span class="stat-card-value" id="stat_users">—</span>
+                    </div>
+                    <div class="stat-circle-icon" style="background-color: rgba(168, 85, 247, 0.1); color: #a855f7;">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics and Operations Section -->
+            <div class="grid-main animated" style="animation-delay: 0.2s;">
+                <!-- Main Chart Card -->
+                <div class="dashboard-card">
+                    <div class="card-header-custom">
+                        <h3 class="card-title-custom"><i class="bi bi-bar-chart-line me-2"></i>Revenue Overview</h3>
+                    </div>
+                    <div style="position: relative; height:320px; width:100%;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Quick Operations Card -->
+                <div class="dashboard-card">
+                    <div class="card-header-custom">
+                        <h3 class="card-title-custom"><i class="bi bi-lightning-charge me-2"></i>Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions-list">
+                        <a href="/admin/rooms" class="action-item">
+                            <div class="action-left">
+                                <div class="action-icon-wrap">
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                <div class="action-details">
+                                    <h4>Manage Rooms</h4>
+                                    <p>Add, edit or disable rooms instantly</p>
+                                </div>
                             </div>
-                            <div class="col-md-4 col-6">
-                                <label class="form-label">Room Type</label>
-                                <select id="room_type" class="form-select" required>
-                                    <option value="Single">Single</option>
-                                    <option value="Double">Double</option>
-                                    <option value="Family">Family</option>
-                                    <option value="Suite">Suite</option>
-                                </select>
+                            <i class="bi bi-chevron-right action-btn-arrow"></i>
+                        </a>
+
+                        <a href="/admin/bookings" class="action-item">
+                            <div class="action-left">
+                                <div class="action-icon-wrap">
+                                    <i class="bi bi-calendar-plus"></i>
+                                </div>
+                                <div class="action-details">
+                                    <h4>Customer Bookings</h4>
+                                    <p>Confirm status or check-in customers</p>
+                                </div>
                             </div>
-                            <div class="col-md-4 col-12">
-                                <label class="form-label">Price per Night (LKR)</label>
-                                <input type="number" id="room_price" class="form-control" placeholder="15000" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Upload Image</label>
-                                <input type="file" id="room_image" class="form-control" accept="image/*">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Or Image URL</label>
-                                <input type="text" id="room_image_url" class="form-control" placeholder="https://...">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Description</label>
-                                <input type="text" id="room_desc" class="form-control"
-                                    placeholder="Ocean-view room with king bed..." required>
-                            </div>
-                            <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-gold w-100">
-                                    <i class="bi bi-plus-lg me-2"></i>Add Room
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                            <i class="bi bi-chevron-right action-btn-arrow"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Edit Room Modal -->
-    <div class="modal fade" id="editRoomModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Room</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editRoomForm">
-                        <input type="hidden" id="edit_room_id">
-                        <div class="mb-3">
-                            <label class="form-label">Price per Night (LKR)</label>
-                            <input type="number" id="edit_room_price" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <input type="text" id="edit_room_desc" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Update Image (Optional)</label>
-                            <input type="file" id="edit_room_image" class="form-control" accept="image/*">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Or Image URL</label>
-                            <input type="text" id="edit_room_image_url" class="form-control" placeholder="https://...">
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Status</label>
-                            <select id="edit_room_status" class="form-select" required>
-                                <option value="Available">Available</option>
-                                <option value="Maintenance">Maintenance</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-gold w-100">
-                            <i class="bi bi-check2-circle me-2"></i>Update Room
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Booking Modal -->
-    <div class="modal fade" id="addBookModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-calendar-plus me-2"></i>Add a New Booking</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addBookForm">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Customer Name</label>
-                                <input type="text" id="book_cust_name" class="form-control" placeholder="e.g. John Doe"
-                                    required>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <label class="form-label">ID Type</label>
-                                <select id="book_id_type" class="form-select" required>
-                                    <option value="NIC">NIC</option>
-                                    <option value="Passport">Passport</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <label class="form-label">ID Number</label>
-                                <input type="text" id="book_id_number" class="form-control"
-                                    placeholder="e.g. 199012345678" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Room Type</label>
-                                <select id="book_room_type" class="form-select" required>
-                                    <option value="Single">Single</option>
-                                    <option value="Double">Double</option>
-                                    <option value="Family">Family</option>
-                                    <option value="Suite">Suite</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 col-6">
-                                <label class="form-label">Check-in Date</label>
-                                <input type="date" id="book_checkin" class="form-control" required>
-                            </div>
-                            <div class="col-md-4 col-6">
-                                <label class="form-label">Check-out Date</label>
-                                <input type="date" id="book_checkout" class="form-control" required>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <button type="button" id="btnCheckAvailableRooms"
-                                    class="btn btn-outline-secondary w-100 py-2"
-                                    style="border-radius: 8px; font-weight: 600;">
-                                    <i class="bi bi-search me-2"></i>Check Available Free Rooms
-                                </button>
-                            </div>
-                            <div class="col-12 mt-3">
-                                <label class="form-label">Select Available Room</label>
-                                <select id="book_available_rooms" class="form-select" required disabled>
-                                    <option value="">Please check availability first...</option>
-                                </select>
-                            </div>
-                            <div class="col-12 mt-4">
-                                <button type="submit" id="btnSubmitAdminBooking" class="btn btn-gold w-100 py-2"
-                                    disabled>
-                                    <i class="bi bi-check2-circle me-2"></i>Confirm Booking
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer Placeholder -->
-    <div id="footer-placeholder"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/common.js"></script>
     <script src="admin.js"></script>
 </body>
 

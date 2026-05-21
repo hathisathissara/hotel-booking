@@ -46,6 +46,12 @@ app.get('/login', (req, res) => {
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/admin/admin.html'));
 });
+app.get('/admin/rooms', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin/rooms.html'));
+});
+app.get('/admin/bookings', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/admin/bookings.html'));
+});
 
 // customer bookings
 app.get('/my-bookings', (req, res) => {
