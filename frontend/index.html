@@ -3,266 +3,804 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumière Hotel — Luxury Stay</title>
+    <title>Lumière Hotel — Luxury Stay in Colombo, Sri Lanka</title>
+    <meta name="description" content="Experience world-class luxury at Lumière Hotel, Colombo. Premium ocean-front rooms, impeccable service, and unforgettable stays await you.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        /* ════════════════════════════════════════════
+           DESIGN TOKENS
+        ════════════════════════════════════════════ */
         :root {
-            --navy: #0d1b2a;
-            --navy-mid: #1a2e45;
-            --gold: #c9a84c;
-            --gold-light: #e8c97e;
-            --cream: #f9f5ee;
-            --text-muted-custom: #8a9ab0;
+            --navy:        #080f1a;
+            --navy-mid:    #0f1f35;
+            --navy-light:  #162944;
+            --gold:        #c9a84c;
+            --gold-light:  #e8c97e;
+            --gold-dim:    rgba(201,168,76,0.18);
+            --gold-glow:   rgba(201,168,76,0.35);
+            --cream:       #f8f4ed;
+            --cream-dark:  #ede8de;
+            --text-muted:  #8a9ab0;
+            --glass-bg:    rgba(8,15,26,0.55);
+            --glass-border:rgba(201,168,76,0.25);
+            --card-shadow: 0 24px 64px rgba(0,0,0,0.13);
+            --radius-lg:   20px;
+            --radius-md:   12px;
+            --transition:  0.3s cubic-bezier(0.4,0,0.2,1);
         }
 
-        * { box-sizing: border-box; }
+        /* ════════════════════════════════════════════
+           BASE
+        ════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--cream);
             color: var(--navy);
-            margin: 0;
+            overflow-x: hidden;
         }
 
-       
-
-        /* ── Hero ── */
+        /* ════════════════════════════════════════════
+           HERO — FULL-SCREEN CINEMATIC
+        ════════════════════════════════════════════ */
         .hero {
-            background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #1e3a5f 100%);
-            padding: 6rem 2rem 5rem;
-            text-align: center;
             position: relative;
+            height: 100vh;
+            min-height: 680px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
         }
-        .hero::before {
+
+        /* Room photo background */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('/uploads/hero_room.png');
+            background-size: cover;
+            background-position: center 30%;
+            transform: scale(1.06);
+            transition: transform 8s ease;
+            will-change: transform;
+        }
+        .hero:hover .hero-bg { transform: scale(1.0); }
+
+        /* Multi-layer cinematic overlay */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right, rgba(8,15,26,0.72) 0%, rgba(8,15,26,0.35) 60%, rgba(8,15,26,0.18) 100%),
+                linear-gradient(to top, rgba(8,15,26,0.9) 0%, rgba(8,15,26,0.0) 55%),
+                linear-gradient(to bottom, rgba(8,15,26,0.5) 0%, transparent 25%);
+        }
+
+        /* Gold shimmer line at bottom of hero */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-light) 60%, transparent 100%);
+            opacity: 0.7;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: left;
+            max-width: 740px;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.72rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 1.4rem;
+            opacity: 0;
+            animation: slideRight 0.8s 0.2s ease forwards;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 6vw, 5.2rem);
+            color: #fff;
+            font-weight: 700;
+            line-height: 1.07;
+            margin-bottom: 1.6rem;
+            opacity: 0;
+            animation: slideRight 0.8s 0.4s ease forwards;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .hero-desc {
+            color: rgba(255,255,255,0.72);
+            font-size: 1.05rem;
+            font-weight: 300;
+            max-width: 460px;
+            line-height: 1.75;
+            margin-bottom: 2.4rem;
+            opacity: 0;
+            animation: slideRight 0.8s 0.6s ease forwards;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: slideRight 0.8s 0.8s ease forwards;
+        }
+
+        /* Scroll indicator */
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.45);
+            font-size: 0.68rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s 1.4s ease forwards;
+        }
+        .hero-scroll span { animation: scrollBounce 1.8s infinite; }
+        .hero-scroll span svg { width: 18px; height: 18px; }
+
+        /* Hero stats strip */
+        .hero-stats {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 2;
+            display: flex;
+            gap: 0;
+        }
+        .hero-stat {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            padding: 1.1rem 2rem;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        .hero-stat:nth-child(1) { animation-delay: 1.0s; }
+        .hero-stat:nth-child(2) { animation-delay: 1.1s; }
+        .hero-stat:nth-child(3) { animation-delay: 1.2s; }
+        .hero-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--gold-light);
+            font-weight: 700;
+            line-height: 1;
+        }
+        .hero-stat-label {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* ════════════════════════════════════════════
+           BUTTONS
+        ════════════════════════════════════════════ */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            color: var(--navy);
+            border: none;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: var(--radius-md);
+            padding: 0.85rem 2.2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .btn-gold::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background: rgba(255,255,255,0);
+            transition: var(--transition);
         }
-        .hero-eyebrow {
-            font-size: 0.75rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--gold);
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(201,168,76,0.5);
+            color: var(--navy);
+        }
+        .btn-gold:hover::after { background: rgba(255,255,255,0.12); }
+
+        .btn-ghost {
+            background: transparent;
+            color: rgba(255,255,255,0.85);
+            border: 1.5px solid rgba(255,255,255,0.35);
             font-weight: 500;
-            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: var(--radius-md);
+            padding: 0.82rem 2rem;
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            color: #fff;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.25rem;
-        }
-        .hero-sub {
-            color: var(--text-muted-custom);
-            font-size: 1.1rem;
-            max-width: 480px;
-            margin: 0 auto 2rem;
-        }
-        .hero-divider {
-            width: 60px;
-            height: 2px;
-            background: var(--gold);
-            margin: 0 auto 2.5rem;
+        .btn-ghost:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(201,168,76,0.08);
         }
 
-        /* ── Search Card ── */
-        .search-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-            border: 1px solid rgba(201, 168, 76, 0.1);
-            max-width: 860px;
-            margin: -3rem auto 3rem;
+        .btn-teal {
+            background: linear-gradient(135deg, #0a7fa0 0%, #0ea5c2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+            border-radius: var(--radius-md);
+            padding: 0.72rem 1.4rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .btn-teal:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(14,165,194,0.35);
+            color: white;
+        }
+
+        .btn-navy {
+            background: var(--navy);
+            color: rgba(255,255,255,0.85);
+            border: 1.5px solid rgba(201,168,76,0.3);
+            font-weight: 500;
+            font-size: 0.82rem;
+            border-radius: var(--radius-md);
+            padding: 0.72rem 1.4rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .btn-navy:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ════════════════════════════════════════════
+           SEARCH CARD — GLASSMORPHISM
+        ════════════════════════════════════════════ */
+        .search-wrapper {
             position: relative;
             z-index: 10;
+            margin-top: -5rem;
+            padding: 0 1.5rem;
         }
-        .search-card h5 {
-            font-family: 'Playfair Display', serif;
+
+        .search-card {
+            background: rgba(255,255,255,0.97);
+            border-radius: var(--radius-lg);
+            padding: 2.4rem 2.6rem;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(201,168,76,0.15);
+            max-width: 980px;
+            margin: 0 auto;
+            backdrop-filter: blur(20px);
+        }
+
+        .search-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.8rem;
+        }
+        .search-heading-icon {
+            width: 40px; height: 40px;
+            background: var(--gold-dim);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold);
             font-size: 1.1rem;
-            color: var(--navy);
-            margin-bottom: 1.25rem;
+            flex-shrink: 0;
         }
-        .search-card .form-label {
+        .search-heading h5 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--navy);
+            margin: 0;
+            font-weight: 600;
+        }
+        .search-heading small {
             font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 1px;
+        }
+
+        .search-card .form-label {
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted-custom);
-            font-weight: 500;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
         .search-card .form-control,
         .search-card .form-select {
-            border: 1.5px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.65rem 0.9rem;
+            border: 1.5px solid #e4e9f0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
             font-size: 0.9rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--navy);
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
         .search-card .form-control:focus,
         .search-card .form-select:focus {
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+            background: #fff;
+            outline: none;
         }
 
-        /* ── Buttons ── */
-        .btn-gold {
+        /* ════════════════════════════════════════════
+           WHY CHOOSE US — FEATURE STRIP
+        ════════════════════════════════════════════ */
+        .features-strip {
+            background: var(--navy);
+            padding: 4.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .features-strip::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 120%, rgba(201,168,76,0.08) 0%, transparent 70%);
+        }
+        .features-strip::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.4;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+        .feature-icon-wrap {
+            width: 64px; height: 64px;
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin: 0 auto 1.2rem;
+            transition: var(--transition);
+        }
+        .feature-item:hover .feature-icon-wrap {
             background: var(--gold);
             color: var(--navy);
-            border: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            letter-spacing: 0.5px;
-            border-radius: 8px;
-            padding: 0.7rem 1.8rem;
-            transition: background 0.2s, transform 0.15s;
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(201,168,76,0.35);
         }
-        .btn-gold:hover {
-            background: var(--gold-light);
-            color: var(--navy);
-            transform: translateY(-1px);
+        .feature-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
         }
-        .btn-outline-navy {
-            background: transparent;
-            color: var(--navy);
-            border: 1.5px solid var(--navy-mid);
-            font-weight: 500;
-            font-size: 0.875rem;
-            border-radius: 8px;
-            padding: 0.65rem 1.4rem;
-            transition: all 0.2s;
+        .feature-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
-        .btn-outline-navy:hover {
-            background: var(--navy);
-            color: white;
-        }
-        .btn-teal {
-            background: #0ea5c2;
-            color: white;
-            border: none;
-            font-weight: 500;
-            font-size: 0.875rem;
-            border-radius: 8px;
-            padding: 0.65rem 1.2rem;
-            transition: background 0.2s;
-        }
-        .btn-teal:hover { background: #0c8faa; color: white; }
 
-        /* ── Rooms Section ── */
-        .section-label {
-            font-size: 0.7rem;
+        /* ════════════════════════════════════════════
+           SECTION HEADERS
+        ════════════════════════════════════════════ */
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.68rem;
             letter-spacing: 4px;
             text-transform: uppercase;
             color: var(--gold);
-            font-weight: 600;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+        }
+        .section-eyebrow::before,
+        .section-eyebrow::after {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.6;
         }
         .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
             color: var(--navy);
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 0.7rem;
+            line-height: 1.2;
+        }
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
 
-        /* ── Room Card ── */
+        /* ════════════════════════════════════════════
+           ROOM CARDS — PREMIUM
+        ════════════════════════════════════════════ */
+        .rooms-section {
+            padding: 5rem 0 6rem;
+            background: var(--cream);
+        }
+
         .room-card {
-            background: white;
-            border-radius: 14px;
+            background: #fff;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-            border: 1px solid #eef0f4;
-            transition: transform 0.25s, box-shadow 0.25s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform var(--transition), box-shadow var(--transition);
             height: 100%;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         .room-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            transform: translateY(-8px);
+            box-shadow: 0 32px 72px rgba(0,0,0,0.14);
         }
-        .room-card img {
+
+        /* Image container with overlay on hover */
+        .room-img-wrap {
+            position: relative;
+            overflow: hidden;
+            height: 240px;
+            flex-shrink: 0;
+        }
+        .room-img-wrap img {
             width: 100%;
-            height: 220px;
+            height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
         }
+        .room-card:hover .room-img-wrap img { transform: scale(1.08); }
+
+        .room-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(8,15,26,0.65) 0%, transparent 55%);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .room-card:hover .room-img-overlay { opacity: 1; }
+
+        /* Badge on image */
+        .room-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(201,168,76,0.92);
+            color: var(--navy);
+            border-radius: 6px;
+            padding: 4px 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Status ribbon */
+        .room-status-ribbon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 6px;
+            padding: 3px 10px;
+        }
+        .room-status-available {
+            background: rgba(16,185,129,0.85);
+            color: #fff;
+        }
+        .room-status-maintenance {
+            background: rgba(239,68,68,0.85);
+            color: #fff;
+        }
+
         .room-card-body {
-            padding: 1.5rem;
+            padding: 1.8rem;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
-        .room-badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            background: rgba(201,168,76,0.12);
-            color: var(--gold);
-            border-radius: 4px;
-            padding: 3px 10px;
-            margin-bottom: 0.75rem;
+
+        .room-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 0.9rem;
         }
+        .room-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .room-meta-item i { color: var(--gold); font-size: 0.85rem; }
+
         .room-card h5 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--navy);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
         }
-        .room-card p {
-            font-size: 0.875rem;
+        .room-card p.room-desc {
+            font-size: 0.84rem;
             color: #64748b;
             flex: 1;
-            margin-bottom: 1rem;
+            line-height: 1.65;
+            margin-bottom: 1.2rem;
+        }
+
+        .room-card-divider {
+            height: 1px;
+            background: linear-gradient(90deg, rgba(201,168,76,0.25), transparent);
+            margin-bottom: 1.2rem;
+        }
+
+        .room-price-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
         }
         .room-price {
             font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
+            font-size: 1.5rem;
             color: var(--navy);
             font-weight: 700;
+            line-height: 1;
         }
-        .room-price span {
+        .room-price sub {
             font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            color: var(--text-muted-custom);
+            font-size: 0.75rem;
+            color: var(--text-muted);
             font-weight: 400;
+            bottom: 0;
+        }
+        .room-price-note {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: right;
         }
 
-        /* ── Modal ── */
+        .room-actions {
+            display: flex;
+            gap: 0.65rem;
+        }
+        .room-actions .btn-gold { flex: 1; padding: 0.72rem 1rem; font-size: 0.78rem; border-radius: 10px; }
+        .room-actions .btn-teal { flex-shrink: 0; padding: 0.72rem 1rem; font-size: 0.78rem; border-radius: 10px; }
+        .room-actions .btn-navy { flex-shrink: 0; padding: 0.72rem 1rem; font-size: 0.78rem; border-radius: 10px; }
+
+        /* ════════════════════════════════════════════
+           MODAL — PREMIUM
+        ════════════════════════════════════════════ */
         .modal-content {
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             border: none;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.28);
+            overflow: hidden;
         }
         .modal-header {
             background: var(--navy);
-            color: white;
-            border-radius: 16px 16px 0 0;
-            padding: 1.5rem;
-            border: none;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
+            padding: 1.6rem 2rem;
         }
         .modal-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
+            color: #fff;
         }
-        .modal-header .btn-close { filter: invert(1); }
-        .modal-body { padding: 2rem; }
+        .modal-header .btn-close { filter: invert(1) opacity(0.7); }
+        .modal-header .btn-close:hover { filter: invert(1) opacity(1); }
+        .modal-body { padding: 2.2rem; background: #fff; }
 
-       
+        .modal-body .form-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .modal-body .form-control {
+            border: 1.5px solid #e4e9f0;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .modal-body .form-control:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
+            outline: none;
+        }
 
-        /* Animations */
+        /* ════════════════════════════════════════════
+           REVIEWS MODAL
+        ════════════════════════════════════════════ */
+        .review-item {
+            padding: 1.1rem 0;
+            border-bottom: 1px solid #f0f3f8;
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-stars { color: var(--gold); letter-spacing: 2px; }
+        .review-author { font-weight: 600; font-size: 0.88rem; color: var(--navy); }
+        .review-date { font-size: 0.72rem; color: var(--text-muted); }
+        .review-comment { font-size: 0.85rem; color: #64748b; font-style: italic; line-height: 1.6; margin-top: 0.4rem; }
+
+        /* ════════════════════════════════════════════
+           LOADING SPINNER
+        ════════════════════════════════════════════ */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 0;
+            gap: 1rem;
+        }
+        .luxury-spinner {
+            width: 48px; height: 48px;
+            border: 3px solid rgba(201,168,76,0.15);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ════════════════════════════════════════════
+           EMPTY STATE
+        ════════════════════════════════════════════ */
+        .empty-state {
+            padding: 5rem 0;
+            text-align: center;
+        }
+        .empty-state i { font-size: 3.5rem; color: var(--gold-light); opacity: 0.4; }
+        .empty-state p { margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem; }
+
+        /* ════════════════════════════════════════════
+           FILTER CHIPS
+        ════════════════════════════════════════════ */
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2.5rem;
+            justify-content: center;
+        }
+        .filter-chip {
+            padding: 0.45rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid #dde3ee;
+            background: #fff;
+            color: #64748b;
+            transition: var(--transition);
+        }
+        .filter-chip:hover, .filter-chip.active {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            color: var(--navy);
+        }
+
+        /* ════════════════════════════════════════════
+           ANIMATIONS
+        ════════════════════════════════════════════ */
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-32px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        .fade-up { animation: fadeUp 0.5s ease both; }
-        .fade-up-2 { animation: fadeUp 0.5s 0.1s ease both; }
-        .fade-up-3 { animation: fadeUp 0.5s 0.2s ease both; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(6px); }
+        }
+
+        .fade-up   { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+        .fade-up-2 { opacity: 0; animation: fadeUp 0.6s 0.12s ease forwards; }
+        .fade-up-3 { opacity: 0; animation: fadeUp 0.6s 0.24s ease forwards; }
+
+        /* Intersection Observer driven reveals */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ════════════════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .hero-content { text-align: center; }
+            .hero-eyebrow { justify-content: center; }
+            .hero-cta-group { justify-content: center; }
+            .hero-stats { display: none; }
+            .hero-scroll { display: none; }
+            .search-card { padding: 1.6rem; }
+        }
+        @media (max-width: 480px) {
+            .search-card { padding: 1.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -270,45 +808,103 @@
 <!-- Header Placeholder -->
 <div id="header-placeholder"></div>
 
-<!-- Hero -->
-<div class="hero">
-    <p class="hero-eyebrow fade-up">Colombo, Sri Lanka</p>
-    <h1 class="fade-up-2">Where Luxury<br>Meets Comfort</h1>
-    <div class="hero-divider fade-up-3"></div>
-    <p class="hero-sub fade-up-3">Experience world-class hospitality at Sri Lanka's premier ocean-front property.</p>
-</div>
+<!-- ══════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
 
-<!-- Search Card -->
-<div class="container">
-    <div class="search-card">
-        <h5><i class="bi bi-search me-2" style="color:var(--gold);"></i>Find Your Perfect Room</h5>
+    <div class="hero-content">
+        <p class="hero-eyebrow">Colombo, Sri Lanka</p>
+
+        <h1 class="hero-title">
+            Where Luxury<br>
+            Meets <em>Comfort</em>
+        </h1>
+
+        <p class="hero-desc">
+            Indulge in an unrivalled stay at Sri Lanka's premier ocean-front property. Every detail crafted for your perfect escape.
+        </p>
+
+        <div class="hero-cta-group">
+            <a href="#rooms" class="btn-gold">
+                <i class="bi bi-calendar2-heart me-2"></i>Reserve a Room
+            </a>
+            <a href="#features" class="btn-ghost">
+                <i class="bi bi-play-circle me-2"></i>Explore Hotel
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats strip bottom-right -->
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-value">48+</div>
+            <div class="hero-stat-label">Luxury Rooms</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">4.9★</div>
+            <div class="hero-stat-label">Guest Rating</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-value">15yr</div>
+            <div class="hero-stat-label">Excellence</div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll">
+        <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </span>
+        scroll
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SEARCH CARD — GLASSMORPHISM
+══════════════════════════════════════════════ -->
+<div class="search-wrapper">
+    <div class="search-card fade-up">
+        <div class="search-heading">
+            <div class="search-heading-icon">
+                <i class="bi bi-search"></i>
+            </div>
+            <div>
+                <h5>Find Your Perfect Room</h5>
+                <small>Select your dates and preferences to discover available suites</small>
+            </div>
+        </div>
         <form id="searchForm">
             <div class="row g-3 align-items-end">
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Check-in</label>
+                <div class="col-lg-3 col-md-6 col-6">
+                    <label class="form-label"><i class="bi bi-calendar3 me-1"></i>Check-in</label>
                     <input type="date" id="search_check_in" class="form-control">
                 </div>
-                <div class="col-md-3 col-6">
-                    <label class="form-label">Check-out</label>
+                <div class="col-lg-3 col-md-6 col-6">
+                    <label class="form-label"><i class="bi bi-calendar3 me-1"></i>Check-out</label>
                     <input type="date" id="search_check_out" class="form-control">
                 </div>
-                <div class="col-md-2 col-6">
-                    <label class="form-label">Room Type</label>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <label class="form-label"><i class="bi bi-door-open me-1"></i>Room Type</label>
                     <select id="search_room_type" class="form-select">
-                        <option value="">Any</option>
+                        <option value="">Any Type</option>
                         <option value="Single">Single</option>
                         <option value="Double">Double</option>
                         <option value="Family">Family</option>
                         <option value="Suite">Suite</option>
                     </select>
                 </div>
-                <div class="col-md-2 col-6">
-                    <label class="form-label">Max Price (LKR)</label>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <label class="form-label"><i class="bi bi-cash me-1"></i>Max Price (LKR)</label>
                     <input type="number" id="search_max_price" placeholder="e.g. 50000" class="form-control">
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-gold w-100 py-2">
-                        <i class="bi bi-search me-1"></i> Search
+                <div class="col-lg-2 col-md-4">
+                    <button type="submit" class="btn btn-gold w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-search"></i> Search
                     </button>
                 </div>
             </div>
@@ -316,41 +912,128 @@
     </div>
 </div>
 
-<!-- Rooms Section -->
-<div class="container pb-5">
-    <div class="text-center mb-4">
-        <p class="section-label">Our Collection</p>
-        <h2 class="section-title">Available Rooms</h2>
-    </div>
-    <div id="roomsContainer" class="row g-4">
-        <div class="col-12 text-center py-5">
-            <div class="spinner-border text-warning" role="status"></div>
-            <p class="mt-2 text-muted">Loading rooms...</p>
+<!-- ══════════════════════════════════════════════
+     FEATURES STRIP
+══════════════════════════════════════════════ -->
+<section class="features-strip" id="features">
+    <div class="container">
+        <div class="row g-2 justify-content-center">
+            <div class="col-lg-2 col-md-4 col-6 reveal">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-shield-check"></i></div>
+                    <p class="feature-title">Safe & Secure</p>
+                    <p class="feature-desc">24/7 security & CCTV surveillance</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 reveal" style="transition-delay:0.08s">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-wifi"></i></div>
+                    <p class="feature-title">Ultra-Fast WiFi</p>
+                    <p class="feature-desc">Gigabit fibre throughout the property</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 reveal" style="transition-delay:0.16s">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-cup-hot"></i></div>
+                    <p class="feature-title">Fine Dining</p>
+                    <p class="feature-desc">Award-winning restaurant & bar</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 reveal" style="transition-delay:0.24s">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-water"></i></div>
+                    <p class="feature-title">Infinity Pool</p>
+                    <p class="feature-desc">Rooftop ocean-view infinity pool</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 reveal" style="transition-delay:0.32s">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-heart-pulse"></i></div>
+                    <p class="feature-title">Luxury Spa</p>
+                    <p class="feature-desc">Full-service spa & wellness centre</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 reveal" style="transition-delay:0.40s">
+                <div class="feature-item">
+                    <div class="feature-icon-wrap"><i class="bi bi-car-front"></i></div>
+                    <p class="feature-title">Valet Parking</p>
+                    <p class="feature-desc">Complimentary valet parking</p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Booking Modal -->
+<!-- ══════════════════════════════════════════════
+     ROOMS SECTION
+══════════════════════════════════════════════ -->
+<section class="rooms-section" id="rooms">
+    <div class="container">
+        <!-- Section Header -->
+        <div class="text-center mb-4 reveal">
+            <p class="section-eyebrow">Our Collection</p>
+            <h2 class="section-title">Available Rooms &amp; Suites</h2>
+            <p class="section-subtitle">Each room is thoughtfully designed to offer the finest comfort and breathtaking views.</p>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips reveal" id="filterChips">
+            <button class="filter-chip active" data-type="">All Rooms</button>
+            <button class="filter-chip" data-type="Single">Single</button>
+            <button class="filter-chip" data-type="Double">Double</button>
+            <button class="filter-chip" data-type="Family">Family</button>
+            <button class="filter-chip" data-type="Suite">Suite</button>
+        </div>
+
+        <!-- Rooms Grid -->
+        <div id="roomsContainer" class="row g-4">
+            <div class="col-12">
+                <div class="loading-state">
+                    <div class="luxury-spinner"></div>
+                    <p style="color:var(--text-muted);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Loading Rooms…</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     BOOKING MODAL
+══════════════════════════════════════════════ -->
 <div class="modal fade" id="bookingModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-calendar-check me-2"></i>Reserve Your Room</h5>
+                <h5 class="modal-title"><i class="bi bi-calendar-check me-2" style="color:var(--gold)"></i>Reserve Your Room</h5>
                 <button type="button" class="btn-close" id="closeModal" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <!-- Room preview strip -->
+                <div id="modalRoomPreview" style="background:var(--cream);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.6rem;border-left:3px solid var(--gold);display:none;">
+                    <p style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Selected Room</p>
+                    <p id="modalRoomName" style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--navy);margin:0;font-weight:600"></p>
+                    <p id="modalRoomPrice" style="font-size:0.8rem;color:var(--gold);margin:2px 0 0;font-weight:600"></p>
+                </div>
                 <form id="bookingForm">
                     <input type="hidden" id="modal_room_id">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Check-In Date</label>
+                        <label class="form-label">Check-In Date</label>
                         <input type="date" id="check_in" class="form-control" required>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Check-Out Date</label>
+                        <label class="form-label">Check-Out Date</label>
                         <input type="date" id="check_out" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-gold w-100 py-2">
-                        <i class="bi bi-check2-circle me-2"></i>Confirm Booking
+                    <!-- Total estimate -->
+                    <div id="priceEstimate" style="display:none;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.4rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)">Estimated Total</span>
+                            <span id="totalPriceDisplay" style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold-light);font-weight:700"></span>
+                        </div>
+                        <p id="nightsDisplay" style="font-size:0.75rem;color:var(--text-muted);margin:4px 0 0;text-align:right"></p>
+                    </div>
+                    <button type="submit" class="btn btn-gold w-100 py-3 d-flex align-items-center justify-content-center gap-2" style="font-size:0.85rem;border-radius:12px;">
+                        <i class="bi bi-check2-circle"></i> Confirm Booking
                     </button>
                 </form>
                 <div id="bookingMessage" class="mt-3"></div>
@@ -359,17 +1042,19 @@
     </div>
 </div>
 
-<!-- Reviews Modal -->
+<!-- ══════════════════════════════════════════════
+     REVIEWS MODAL
+══════════════════════════════════════════════ -->
 <div class="modal fade" id="reviewsModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-star me-2"></i>Guest Reviews</h5>
+                <h5 class="modal-title"><i class="bi bi-star-half me-2" style="color:var(--gold)"></i>Guest Reviews</h5>
                 <button type="button" class="btn-close" id="closeReviewsModal" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div id="reviewsList" style="max-height: 360px; overflow-y: auto;">
-                    <p class="text-muted">Loading reviews...</p>
+                <div id="reviewsList" style="max-height:400px;overflow-y:auto;">
+                    <p class="text-muted">Loading reviews…</p>
                 </div>
             </div>
         </div>
@@ -379,8 +1064,51 @@
 <!-- Footer Placeholder -->
 <div id="footer-placeholder"></div>
 
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/common.js"></script>
 <script src="js/script.js"></script>
+<script>
+    /* ── Intersection Observer for reveal animations ── */
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+        });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ── Filter chips → trigger search ── */
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            const type = chip.dataset.type;
+            document.getElementById('search_room_type').value = type;
+            fetchRooms('', '', type, '');
+        });
+    });
+
+    /* ── Price estimate in booking modal ── */
+    function updatePriceEstimate() {
+        const checkIn  = document.getElementById('check_in').value;
+        const checkOut = document.getElementById('check_out').value;
+        const priceEl  = document.getElementById('modalRoomPrice');
+        if (!checkIn || !checkOut || !priceEl) return;
+        const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / 86400000);
+        if (nights <= 0) return;
+        const priceText = priceEl.textContent.replace(/[^0-9]/g, '');
+        const pricePerNight = parseInt(priceText) || 0;
+        if (!pricePerNight) return;
+        const total = nights * pricePerNight;
+        document.getElementById('priceEstimate').style.display = 'block';
+        document.getElementById('totalPriceDisplay').textContent = `LKR ${total.toLocaleString()}`;
+        document.getElementById('nightsDisplay').textContent = `${nights} night${nights > 1 ? 's' : ''} × LKR ${pricePerNight.toLocaleString()}`;
+    }
+    document.getElementById('check_in').addEventListener('change', updatePriceEstimate);
+    document.getElementById('check_out').addEventListener('change', updatePriceEstimate);
+</script>
 </body>
 </html>
