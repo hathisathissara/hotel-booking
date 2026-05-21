@@ -44,7 +44,7 @@ app.get('/login', (req, res) => {
 
 // admin
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/admin.html'));
+    res.sendFile(path.join(__dirname, '../frontend/admin/admin.html'));
 });
 
 // customer bookings
