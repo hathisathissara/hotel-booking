@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const id = document.getElementById('edit_room_id').value;
         let updateData = { 
+            type: document.getElementById('edit_room_type').value,
             price: document.getElementById('edit_room_price').value, 
             description: document.getElementById('edit_room_desc').value, 
             status: document.getElementById('edit_room_status').value 
@@ -184,7 +185,7 @@ async function loadRooms() {
                 <td>LKR ${Number(r.price).toLocaleString()}</td>
                 <td><span class="status-badge-sm ${sClass}">${r.status}</span></td>
                 <td>
-                    <button class="action-btn" style="background:#dbeafe;color:#1e40af;" onclick="openEditRoomModal('${r._id}','${r.price}',encodeURIComponent('${r.description.replace(/'/g, "\\'")}'),'${r.status}')"><i class="bi bi-pencil"></i> Edit</button>
+                    <button class="action-btn" style="background:#dbeafe;color:#1e40af;" onclick="openEditRoomModal('${r._id}','${r.type}','${r.price}',encodeURIComponent('${r.description.replace(/'/g, "\\'")}'),'${r.status}')"><i class="bi bi-pencil"></i> Edit</button>
                     <button class="action-btn" style="background:#fee2e2;color:#991b1b;" onclick="deleteRoom('${r._id}')"><i class="bi bi-tools"></i> Disable</button>
                 </td>
             </tr>`;
@@ -194,8 +195,9 @@ async function loadRooms() {
     }
 }
 
-window.openEditRoomModal = function (id, price, desc, status) {
+window.openEditRoomModal = function (id, type, price, desc, status) {
     document.getElementById('edit_room_id').value = id;
+    document.getElementById('edit_room_type').value = type;
     document.getElementById('edit_room_price').value = price;
     document.getElementById('edit_room_desc').value = decodeURIComponent(desc);
     document.getElementById('edit_room_status').value = status;
