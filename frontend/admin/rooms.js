@@ -49,53 +49,71 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('addRoomForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = true; 
+        btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+
         try {
             let image_url = 'https://via.placeholder.com/300x200?text=Hotel+Room';
             const file = document.getElementById('room_image').files[0];
             const manualUrl = document.getElementById('room_image_url').value;
-            
+
             if (file) {
-                const fd = new FormData(); 
-                fd.append('image', file);
+                // --- Image Compression කෑල්ල පටන් ගන්නවා ---
+                const options = {
+                    maxSizeMB: 0.5,        // උපරිම ෆයිල් සයිස් එක 500KB (0.5MB)
+                    maxWidthOrHeight: 800, // උපරිම දිග හෝ පළල 800px
+                    useWebWorker: true
+                };
+
+                // ෆොටෝ එක පොඩි කරනවා
+                const compressedFile = await imageCompression(file, options);
+
+                const fd = new FormData();
+                // Original file එක වෙනුවට compressed file එක දානවා
+                fd.append('image', compressedFile, compressedFile.name);
+
                 const ur = await fetch('/api/rooms/upload', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: fd
                 });
+
                 if (!ur.ok) throw new Error('Image upload failed.');
                 const ud = await ur.json();
                 image_url = ud.image_url;
+
             } else if (manualUrl.trim()) {
                 image_url = manualUrl.trim();
             }
 
             const res = await fetch('/api/rooms', {
-                method: 'POST', 
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     room_number: document.getElementById('room_number').value,
                     type: document.getElementById('room_type').value,
                     price: document.getElementById('room_price').value,
-                    image_url, 
+                    image_url,
                     description: document.getElementById('room_desc').value
                 })
             });
+
             const data = await res.json();
+
             if (res.ok) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Room Added!',
                     text: 'The new hotel room has been recorded successfully.',
-                    timer: 1500, 
+                    timer: 1500,
                     showConfirmButton: false
                 });
                 e.target.reset();
-                if (bsAddModal) bsAddModal.hide(); 
+                 document.activeElement.blur();
+                if (typeof bsAddModal !== 'undefined') bsAddModal.hide();
                 loadRooms();
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: data.message });
@@ -111,57 +129,82 @@ document.addEventListener('DOMContentLoaded', () => {
     // Edit Room Submit Form
     document.getElementById('editRoomForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Edit එකෙත් Loading Button එකක් පෙන්නුවොත් හොඳයි
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalBtnText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+
         const id = document.getElementById('edit_room_id').value;
-        let updateData = { 
+        let updateData = {
             type: document.getElementById('edit_room_type').value,
-            price: document.getElementById('edit_room_price').value, 
-            description: document.getElementById('edit_room_desc').value, 
-            status: document.getElementById('edit_room_status').value 
+            price: document.getElementById('edit_room_price').value,
+            description: document.getElementById('edit_room_desc').value,
+            status: document.getElementById('edit_room_status').value
         };
         const file = document.getElementById('edit_room_image').files[0];
         const manualUrl = document.getElementById('edit_room_image_url').value;
-        
+
         try {
-            if (file) { 
-                const fd = new FormData(); 
-                fd.append('image', file); 
-                const ur = await fetch('/api/rooms/upload', { 
-                    method: 'POST', 
-                    headers: { 'Authorization': `Bearer ${token}` }, 
-                    body: fd 
-                }); 
-                if (ur.ok) { 
-                    const ud = await ur.json(); 
-                    updateData.image_url = ud.image_url; 
-                } 
+            if (file) {
+                // --- Image Compression කෑල්ල ---
+                const options = {
+                    maxSizeMB: 0.5,
+                    maxWidthOrHeight: 800,
+                    useWebWorker: true
+                };
+
+                const compressedFile = await imageCompression(file, options);
+
+                const fd = new FormData();
+                fd.append('image', compressedFile, compressedFile.name);
+
+                const ur = await fetch('/api/rooms/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: fd
+                });
+
+                if (ur.ok) {
+                    const ud = await ur.json();
+                    updateData.image_url = ud.image_url;
+                } else {
+                    throw new Error('Image upload failed.');
+                }
             } else if (manualUrl.trim()) {
                 updateData.image_url = manualUrl.trim();
             }
 
-            const res = await fetch(`/api/rooms/${id}`, { 
-                method: 'PUT', 
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
-                }, 
-                body: JSON.stringify(updateData) 
+            const res = await fetch(`/api/rooms/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(updateData)
             });
-            if (res.ok) { 
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: 'Updated!', 
-                    text: 'Room details updated.', 
-                    timer: 1500, 
-                    showConfirmButton: false 
-                }); 
-                bsEditModal.hide(); 
-                loadRooms(); 
-            } else { 
-                const d = await res.json(); 
-                Swal.fire({ icon: 'error', title: 'Error', text: d.message }); 
+
+            if (res.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Room details updated.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                 document.activeElement.blur();
+                if (typeof bsEditModal !== 'undefined') bsEditModal.hide();
+                loadRooms();
+            } else {
+                const d = await res.json();
+                Swal.fire({ icon: 'error', title: 'Error', text: d.message });
             }
         } catch (err) {
-            Swal.fire({ icon: 'error', title: 'Error', text: 'An unexpected error occurred.' });
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'An unexpected error occurred.' });
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnText; // බොත්තම කලින් තිබ්බ විදිහටම හදනවා
         }
     });
 });
@@ -173,9 +216,9 @@ async function loadRooms() {
         const rooms = await res.json();
         const tbody = document.getElementById('roomsTableBody');
         tbody.innerHTML = '';
-        if (!rooms.length) { 
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No rooms found.</td></tr>'; 
-            return; 
+        if (!rooms.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">No rooms found.</td></tr>';
+            return;
         }
         rooms.forEach(r => {
             const sClass = r.status === 'Available' ? 's-available' : (r.status === 'Maintenance' ? 's-maintenance' : 's-occupied');
@@ -190,8 +233,8 @@ async function loadRooms() {
                 </td>
             </tr>`;
         });
-    } catch (e) { 
-        console.error("Error loading rooms: ", e); 
+    } catch (e) {
+        console.error("Error loading rooms: ", e);
     }
 }
 
@@ -205,24 +248,24 @@ window.openEditRoomModal = function (id, type, price, desc, status) {
 };
 
 window.deleteRoom = async function (id) {
-    const conf = await Swal.fire({ 
-        title: 'Disable Room?', 
-        text: 'This moves the room status to Maintenance.', 
-        icon: 'warning', 
-        showCancelButton: true, 
-        confirmButtonColor: '#ef4444', 
-        confirmButtonText: 'Yes, disable' 
+    const conf = await Swal.fire({
+        title: 'Disable Room?',
+        text: 'This moves the room status to Maintenance.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Yes, disable'
     });
-    if (conf.isConfirmed) { 
-        const res = await fetch(`/api/rooms/${id}`, { 
-            method: 'DELETE', 
-            headers: { 'Authorization': `Bearer ${token}` } 
-        }); 
-        if (res.ok) { 
-            Swal.fire('Disabled!', 'Room status set to maintenance.', 'success'); 
-            loadRooms(); 
+    if (conf.isConfirmed) {
+        const res = await fetch(`/api/rooms/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            Swal.fire('Disabled!', 'Room status set to maintenance.', 'success');
+            loadRooms();
         } else {
-            Swal.fire('Error', 'Failed to disable.', 'error'); 
+            Swal.fire('Error', 'Failed to disable.', 'error');
         }
     }
 };

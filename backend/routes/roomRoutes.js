@@ -5,14 +5,16 @@ const upload = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-// POST /api/rooms/upload - Upload room image
+// POST /api/rooms/upload - Upload room image to Cloudinary
 router.post('/upload', protect, admin, upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No image file provided" });
     }
+    
+    // The Live URL (req.file.path) provided by Cloudinary is sent to the Frontend.
     res.status(200).json({ 
         message: "Image uploaded successfully", 
-        image_url: `/uploads/${req.file.filename}` 
+        image_url: req.file.path 
     });
 });
 
