@@ -511,6 +511,7 @@
                             <tr>
                                 <th>Customer</th>
                                 <th>NIC / Passport</th>
+                                <th>Phone</th>
                                 <th>Room</th>
                                 <th>Check-in</th>
                                 <th>Check-out</th>
@@ -521,7 +522,7 @@
                         </thead>
                         <tbody id="bookingsTableBody">
                             <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">
+                                <td colspan="9" class="text-center py-4 text-muted">
                                     <div class="spinner-border spinner-border-sm text-warning me-2"></div>Loading bookings...
                                 </td>
                             </tr>
@@ -546,6 +547,10 @@
                             <div class="col-md-6">
                                 <label class="form-label">Customer Name</label>
                                 <input type="text" id="book_cust_name" class="form-control" placeholder="e.g. John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" id="book_phone_number" class="form-control" placeholder="e.g. +94771234567">
                             </div>
                             <div class="col-md-3 col-6">
                                 <label class="form-label">ID Type</label>
