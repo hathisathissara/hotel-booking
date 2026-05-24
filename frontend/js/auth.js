@@ -3,19 +3,21 @@ const registerForm = document.getElementById('registerForm');
 if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const submitBtn = registerForm.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
         submitBtn.innerHTML = "Registering... ⏳";
 
         const userData = {
             full_name: document.getElementById('full_name').value,
+            address: document.getElementById('address').value,
+            phone: document.getElementById('phone_number').value,
             email: document.getElementById('email').value,
             password: document.getElementById('password').value,
             identity_type: document.getElementById('identity_type').value,
             identity_number: document.getElementById('identity_number').value
         };
-        
+
         try {
             const res = await fetch('/api/users/register', {
                 method: 'POST',
@@ -23,14 +25,14 @@ if (registerForm) {
                 body: JSON.stringify(userData)
             });
             const data = await res.json();
-            
+
             Swal.fire({
                 icon: res.ok ? 'success' : 'error',
                 title: res.ok ? 'Success!' : 'Oops...',
                 text: res.ok ? "Registration Successful! Please login." : data.message,
             });
 
-            if(res.ok) registerForm.reset();
+            if (res.ok) registerForm.reset();
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Error', text: "Server connection failed!" });
         } finally {
@@ -66,7 +68,7 @@ if (loginForm) {
             if (res.ok) {
                 localStorage.setItem('hotel_token', data.token);
                 localStorage.setItem('user_info', JSON.stringify(data));
-                
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Welcome!',

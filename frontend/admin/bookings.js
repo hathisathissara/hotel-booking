@@ -104,9 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 full_name: document.getElementById('book_cust_name').value,
                 identity_type: document.getElementById('book_id_type').value,
                 identity_number: document.getElementById('book_id_number').value,
+                address: document.getElementById('address').value,
+                phone: document.getElementById('phone_number').value,
                 room_id: document.getElementById('book_available_rooms').value,
                 check_in_date: document.getElementById('book_checkin').value,
-                check_out_date: document.getElementById('book_checkout').value
+                check_out_date: document.getElementById('book_checkout').value,
             };
 
             try {
@@ -120,12 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    Swal.fire({ 
-                        icon: 'success', 
-                        title: 'Booking Confirmed!', 
-                        text: 'Reservation created successfully.', 
-                        timer: 1500, 
-                        showConfirmButton: false 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Reservation created successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                     e.target.reset();
                     document.getElementById('book_available_rooms').innerHTML = '<option value="">Please check availability first...</option>';
@@ -154,9 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const filtered = allBookingsList.filter(b => {
-                const idNum = (b.user && b.user.identity_number) ? b.user.identity_number.toLowerCase() : '';
-                const name = (b.user && b.user.full_name) ? b.user.full_name.toLowerCase() : '';
-                return idNum.includes(term) || name.includes(term);
+                const idNum  = (b.guest_identity_number || (b.user && b.user.identity_number) || '').toLowerCase();
+                const name   = (b.guest_name           || (b.user && b.user.full_name)        || '').toLowerCase();
+                const phone  = (b.guest_phone          || (b.user && b.user.phone)            || '').toLowerCase();
+                return idNum.includes(term) || name.includes(term) || phone.includes(term);
             });
             renderBookingsTable(filtered);
         });
@@ -169,38 +172,50 @@ async function loadBookings() {
         const res = await fetch('/api/bookings', { headers: { 'Authorization': `Bearer ${token}` } });
         allBookingsList = await res.json();
         renderBookingsTable(allBookingsList);
-    } catch (e) { 
-        console.error("Error fetching bookings list: ", e); 
+    } catch (e) {
+        console.error("Error fetching bookings list: ", e);
     }
 }
 
 function renderBookingsTable(bookings) {
     const tbody = document.getElementById('bookingsTableBody');
     tbody.innerHTML = '';
-    if (!bookings.length) { 
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No bookings found.</td></tr>'; 
-        return; 
+    if (!bookings.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No bookings found.</td></tr>';
+        return;
     }
     bookings.forEach(b => {
-        const sMap = { 
-            Pending: 's-pending', 
-            Confirmed: 's-confirmed', 
-            'Checked-in': 's-checkin', 
-            'Checked-out': 's-checkout', 
-            Cancelled: 's-cancelled' 
+        const sMap = {
+            Pending: 's-pending',
+            Confirmed: 's-confirmed',
+            'Checked-in': 's-checkin',
+            'Checked-out': 's-checkout',
+            Cancelled: 's-cancelled'
         };
         let btns = '—';
         if (b.status === 'Pending') {
             btns = `<button class="action-btn" style="background:#d1fae5;color:#065f46;" onclick="updateBookingStatus('${b._id}','Confirmed')">Confirm</button><button class="action-btn" style="background:#fee2e2;color:#991b1b;" onclick="updateBookingStatus('${b._id}','Cancelled')">Reject</button>`;
         } else if (b.status === 'Confirmed') {
-            btns = `<button class="action-btn" style="background:#dbeafe;color:#1e40af;" onclick="updateBookingStatus('${b._id}','Checked-in')">Check In</button>`;
+            btns = `<button class="action-btn" style="background:#dbeafe;color:#1e40af;" onclick="updateBookingStatus('${b._id}','Checked-in')"><i class="bi bi-box-arrow-in-right"></i> Check In</button><button class="action-btn" style="background:#fee2e2;color:#991b1b;" onclick="updateBookingStatus('${b._id}','Cancelled')"><i class="bi bi-x-circle"></i> Cancel</button>`;
         } else if (b.status === 'Checked-in') {
-            btns = `<button class="action-btn" style="background:#ede9fe;color:#5b21b6;" onclick="updateBookingStatus('${b._id}','Checked-out')">Check Out</button>`;
+            btns = `<button class="action-btn" style="background:#ede9fe;color:#5b21b6;" onclick="updateBookingStatus('${b._id}','Checked-out')"><i class="bi bi-box-arrow-right"></i> Check Out</button>`;
         }
-        
+
+        // For manager walk-in bookings, guest_* fields are stored on the booking itself.
+        // For registered-customer bookings, fall back to user.* fields.
+        const displayName     = b.guest_name         || (b.user && b.user.full_name)         || 'Unknown';
+        const displayIdNum    = b.guest_identity_number || (b.user && b.user.identity_number) || '—';
+        const displayPhone    = b.guest_phone         || (b.user && b.user.phone)             || '—';
+
+        // Badge to distinguish walk-in vs registered
+        const guestBadge = b.guest_name
+            ? `<span style="font-size:0.65rem;background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:5px;">Walk-in</span>`
+            : `<span style="font-size:0.65rem;background:#dbeafe;color:#1e40af;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:5px;">Registered</span>`;
+
         tbody.innerHTML += `<tr>
-            <td><strong>${b.user ? b.user.full_name : 'Unknown'}</strong></td>
-            <td><code>${b.user ? b.user.identity_number : '—'}</code></td>
+            <td><strong>${displayName}</strong>${guestBadge}</td>
+            <td><code>${displayIdNum}</code></td>
+            <td><code>${displayPhone}</code></td>
             <td>${b.room ? b.room.room_number : '—'} <span class="text-muted">(${b.room ? b.room.type : '—'})</span></td>
             <td>${new Date(b.check_in_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</td>
             <td>${new Date(b.check_out_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</td>
@@ -213,26 +228,26 @@ function renderBookingsTable(bookings) {
 
 window.updateBookingStatus = async function (id, status) {
     try {
-        const res = await fetch(`/api/bookings/${id}/status`, { 
-            method: 'PUT', 
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}` 
-            }, 
-            body: JSON.stringify({ status }) 
+        const res = await fetch(`/api/bookings/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
         });
-        if (res.ok) { 
-            Swal.fire({ 
-                icon: 'success', 
-                title: 'Updated', 
-                text: `Booking marked as ${status}.`, 
-                timer: 1500, 
-                showConfirmButton: false 
-            }); 
-            loadBookings(); 
-        } else { 
-            const d = await res.json(); 
-            Swal.fire({ icon: 'error', title: 'Failed', text: d.message }); 
+        if (res.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated',
+                text: `Booking marked as ${status}.`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            loadBookings();
+        } else {
+            const d = await res.json();
+            Swal.fire({ icon: 'error', title: 'Failed', text: d.message });
         }
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update booking status.' });

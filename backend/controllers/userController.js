@@ -20,6 +20,8 @@ const loginUser = async (req, res) => {
             res.json({
                 _id: user._id,
                 full_name: user.full_name,
+                phone: user.phone,
+                address: user.address,
                 email: user.email,
                 role: user.role,
                 token: token
@@ -35,7 +37,7 @@ const loginUser = async (req, res) => {
 // User Register
 const registerUser = async (req, res) => {
     try {
-        const { full_name, email, password, identity_type, identity_number } = req.body;
+        const { full_name,phone,address, email, password, identity_type, identity_number } = req.body;
 
         // 1. Email eka hari ID eka hari kalin thiyenawada balamu
         const userExists = await User.findOne({
@@ -53,6 +55,8 @@ const registerUser = async (req, res) => {
         // 3. Aluth user wa create karamu
         const user = await User.create({
             full_name,
+            phone,
+            address,
             email,
             password: hashedPassword,
             identity_type,
