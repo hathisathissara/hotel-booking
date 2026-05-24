@@ -70,9 +70,9 @@ const createBooking = async (req, res) => {
 
 const createAdminBooking = async (req, res) => {
     try {
-        const { full_name, identity_type, identity_number, room_id, check_in_date, check_out_date } = req.body;
+        const { full_name, identity_type, identity_number, phone_number, room_id, check_in_date, check_out_date } = req.body;
 
-        if (!full_name || !identity_type || !identity_number || !room_id || !check_in_date || !check_out_date) {
+        if (!full_name || !identity_type || !identity_number || !phone_number || !room_id || !check_in_date || !check_out_date) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
 
@@ -108,10 +108,14 @@ const createAdminBooking = async (req, res) => {
                 full_name,
                 email: `walkin_${identity_number}_${Date.now()}@lumiere.com`,
                 password: hashedPassword,
+                phone_number,
                 identity_type,
                 identity_number,
                 role: 'customer'
             });
+        } else if (!user.phone_number) {
+            user.phone_number = phone_number;
+            await user.save();
         }
 
         const timeDifference = checkOut.getTime() - checkIn.getTime();
@@ -136,7 +140,7 @@ const createAdminBooking = async (req, res) => {
 const getAllBookings = async (req, res) => {
     try {
         const bookings = await Booking.find()
-            .populate('user', 'full_name email identity_number')
+            .populate('user', 'full_name email phone_number identity_number')
             .populate('room', 'room_number type price')
             .sort({ createdAt: -1 });
 
@@ -164,7 +168,7 @@ const getMyBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ user: req.user._id })
             .populate('room', 'room_number type price image_url');
-        
+
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({ message: "Server Error", error: error.message });

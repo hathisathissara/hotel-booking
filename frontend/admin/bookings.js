@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 full_name: document.getElementById('book_cust_name').value,
                 identity_type: document.getElementById('book_id_type').value,
                 identity_number: document.getElementById('book_id_number').value,
+                phone_number: document.getElementById('book_phone_number').value,
                 room_id: document.getElementById('book_available_rooms').value,
                 check_in_date: document.getElementById('book_checkin').value,
                 check_out_date: document.getElementById('book_checkout').value
@@ -120,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    Swal.fire({ 
-                        icon: 'success', 
-                        title: 'Booking Confirmed!', 
-                        text: 'Reservation created successfully.', 
-                        timer: 1500, 
-                        showConfirmButton: false 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Booking Confirmed!',
+                        text: 'Reservation created successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
                     });
                     e.target.reset();
                     document.getElementById('book_available_rooms').innerHTML = '<option value="">Please check availability first...</option>';
@@ -169,25 +170,25 @@ async function loadBookings() {
         const res = await fetch('/api/bookings', { headers: { 'Authorization': `Bearer ${token}` } });
         allBookingsList = await res.json();
         renderBookingsTable(allBookingsList);
-    } catch (e) { 
-        console.error("Error fetching bookings list: ", e); 
+    } catch (e) {
+        console.error("Error fetching bookings list: ", e);
     }
 }
 
 function renderBookingsTable(bookings) {
     const tbody = document.getElementById('bookingsTableBody');
     tbody.innerHTML = '';
-    if (!bookings.length) { 
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No bookings found.</td></tr>'; 
-        return; 
+    if (!bookings.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No bookings found.</td></tr>';
+        return;
     }
     bookings.forEach(b => {
-        const sMap = { 
-            Pending: 's-pending', 
-            Confirmed: 's-confirmed', 
-            'Checked-in': 's-checkin', 
-            'Checked-out': 's-checkout', 
-            Cancelled: 's-cancelled' 
+        const sMap = {
+            Pending: 's-pending',
+            Confirmed: 's-confirmed',
+            'Checked-in': 's-checkin',
+            'Checked-out': 's-checkout',
+            Cancelled: 's-cancelled'
         };
         let btns = '—';
         if (b.status === 'Pending') {
@@ -197,9 +198,10 @@ function renderBookingsTable(bookings) {
         } else if (b.status === 'Checked-in') {
             btns = `<button class="action-btn" style="background:#ede9fe;color:#5b21b6;" onclick="updateBookingStatus('${b._id}','Checked-out')">Check Out</button>`;
         }
-        
+
         tbody.innerHTML += `<tr>
             <td><strong>${b.user ? b.user.full_name : 'Unknown'}</strong></td>
+            <td>${b.user && b.user.phone_number ? b.user.phone_number : '—'}</td>
             <td><code>${b.user ? b.user.identity_number : '—'}</code></td>
             <td>${b.room ? b.room.room_number : '—'} <span class="text-muted">(${b.room ? b.room.type : '—'})</span></td>
             <td>${new Date(b.check_in_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</td>
@@ -213,26 +215,26 @@ function renderBookingsTable(bookings) {
 
 window.updateBookingStatus = async function (id, status) {
     try {
-        const res = await fetch(`/api/bookings/${id}/status`, { 
-            method: 'PUT', 
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${token}` 
-            }, 
-            body: JSON.stringify({ status }) 
+        const res = await fetch(`/api/bookings/${id}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
         });
-        if (res.ok) { 
-            Swal.fire({ 
-                icon: 'success', 
-                title: 'Updated', 
-                text: `Booking marked as ${status}.`, 
-                timer: 1500, 
-                showConfirmButton: false 
-            }); 
-            loadBookings(); 
-        } else { 
-            const d = await res.json(); 
-            Swal.fire({ icon: 'error', title: 'Failed', text: d.message }); 
+        if (res.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated',
+                text: `Booking marked as ${status}.`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+            loadBookings();
+        } else {
+            const d = await res.json();
+            Swal.fire({ icon: 'error', title: 'Failed', text: d.message });
         }
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to update booking status.' });
